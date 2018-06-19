@@ -44,34 +44,43 @@ class Helpers{
     }
 
     public static function getHbA1C($value){
+        
 
         $data=array(
             'seq'=>'',
             'test'=>'HbA1c',
-            'target'=>'Below 5.9%',
+            'target'=>'Below 6.5%',
+            'unit'=>'%',
             'target_points'=>'0',
-            'result'=>'',
-            'result1'=>'',
+            'target_result'=>'6.5',
+            'result'=>$value,
+            'result1'=>'Your HbA1c is  '.$value.'%.',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
             'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
-        $results= DB::select("select messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
+
+        $results= DB::select("select points from hba1cscore where diabeticrisk='Healthy'");
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
+
+        $results= DB::select("select goalimprove,goalworsen,goalnochange,goalachieved,messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
         where :value>=perfrom AND :value<=perto",
         ['value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'HbA1c',
-                'target'=>'Below 5.9%',
-                'target_points'=>'0',
-                'result'=>$value.'%',
-                'result1'=>'Your HbA1c is  '.$value.'%.',
-                'risk_category'=>$results[0]->diabeticrisk,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-            );
+            $data["risk_category"]=$results[0]->diabeticrisk;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
             if($value>=6.5){
                 $data["message"]=$results[0]->messagediabetic;
             }else{
@@ -369,35 +378,64 @@ class Helpers{
 
         return $data;
     }
+    
 
     public static function getExercise($exercise,$days){
-
-        $data=array(
-            'seq'=>'',
-            'test'=>'Exercise',
-            'target'=>'Everyday',
-            'target_points'=>'0',
-            'result'=>'',
-            'risk_category'=>'',
-            'result_points'=>'',
-            'color'=>''
-        );
+        if($exercise=="Vigorous"){
+            $data=array(
+                'seq'=>'',
+                'test'=>'Vigorous Exercise',
+                'target'=>'Everyday',
+                'target_points'=>'0',
+                'result'=>'',
+                'risk_category'=>'',
+                'result_points'=>'',
+                'color'=>''
+            );
+        }else{
+            $data=array(
+                'seq'=>'',
+                'test'=>'Moderate Exercise',
+                'target'=>'Everyday',
+                'target_points'=>'0',
+                'result'=>'',
+                'risk_category'=>'',
+                'result_points'=>'',
+                'color'=>''
+            );
+        }
 
         $results= DB::select("select distinct riskcategory,points,color from lifestylescore_exercise 
         where exercise=:exercise and days=:days",
         ['exercise'=>$exercise,'days'=>$days]);
         
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Exercise',
-                'target'=>'Everyday',
-                'target_points'=>'0',
-                'result'=>$days.' day(s)',
-                'risk_category'=>$results[0]->riskcategory,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color
-        );
+            if($exercise=="Vigorous"){
+                $data=array(
+                    'seq'=>'',
+                    'test'=>'Vigorous Exercise',
+                    'target'=>'Everyday',
+                    'target_points'=>'0',
+                    'result'=>$days.' day(s)',
+                    'risk_category'=>$results[0]->riskcategory,
+                    'result_points'=>$results[0]->points,
+                    'color'=>$results[0]->color
+            );
+        }else{
+            if($exercise=="Vigorous"){
+                $data=array(
+                    'seq'=>'',
+                    'test'=>'Moderate Exercise',
+                    'target'=>'Everyday',
+                    'target_points'=>'0',
+                    'result'=>$days.' day(s)',
+                    'risk_category'=>$results[0]->riskcategory,
+                    'result_points'=>$results[0]->points,
+                    'color'=>$results[0]->color
+            );
+            }
+
+        }
     }
 
         return $data;

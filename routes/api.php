@@ -24,6 +24,8 @@ Route::group(['prefix'=>'analysis'],function()
     Route::get('healthscore_v1/{medicalno}/{visitno}',['uses'=>'AnalysisController@healthscore_v1']);
     Route::get('healthscore_v2/{medicalno}/{visitno}',['uses'=>'AnalysisController@healthscore_v2']);
     Route::get('cvdreport_v1/{medicalno}/{visitno}',['uses'=>'AnalysisController@cvdreport_v1']);
+    Route::get('goalsetting_v1/{medicalno}/{visitno1}/{visitno2}',['uses'=>'AnalysisController@goalsetting_v1']);
+    
 });
 
 Route::group(['prefix'=>'data'],function()

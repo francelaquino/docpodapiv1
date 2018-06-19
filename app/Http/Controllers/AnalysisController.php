@@ -111,9 +111,49 @@ class AnalysisController extends Controller {
         $scorecard[]= Helpers::getTriglycerides($visit["triglycerides"]);
         $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"]);
         $scorecard[]= Helpers::getWaist($visit["waist"],$patient["southasian"],$patient["gender"]);
-        $scorecard[]= Helpers::getExercise($survey_v1["typeofexercise"],$survey_v1["exerciseperweek30min"]);
+        if($survey_v1["typeofexercise"]!="" && $survey_v1["typeofexercise"]!=null){
+            $scorecard[]= Helpers::getExercise($survey_v1["typeofexercise"],$survey_v1["exerciseperweek30min"]);
+        }
         return json_encode($scorecard);
     }
+
+    public function goalsetting_v1($medicalno,$visitno1,$visitno2)
+    {
+        $goalsetting=array(
+            'hba1c_message'=>'',
+            'hba1c_status'=>'',
+        );
+
+       
+
+        $visit1=Helpers::getPatientVisitData($medicalno,$visitno1);
+        $visit2=Helpers::getPatientVisitData($medicalno,$visitno2);
+
+        $hba1c= Helpers::getHbA1C($visit2["hba1c"]);
+ 
+       //HbA1c
+        if((int)$hba1c["result"]==(int)$hba1c["target_result"]){
+            $goalsetting["hba1c_message"]="Congratulations, your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalachieved"];
+            $goalsetting["hba1c_status"]="achieved";
+        }
+        else if((int)$visit1["hba1c"]==(int)$visit2["hba1c"]){
+            $goalsetting["hba1c_message"]=$hba1c["goalnochange"];
+            $goalsetting["hba1c_status"]="nochange";
+        }else if((int)$visit1["hba1c"]>(int)$visit2["hba1c"]){
+            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalimprove"];
+            $goalsetting["hba1c_status"]="improve";
+        }else if((int)$visit1["hba1c"]<(int)$visit2["hba1c"]){
+            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalworsen"];
+            $goalsetting["hba1c_status"]="worsen";
+        }
+        
+        
+        
+        
+        
+        return json_encode($goalsetting);
+    }
+
 
     public function healthscore_v2($medicalno,$visitno)
     {
@@ -135,7 +175,6 @@ class AnalysisController extends Controller {
         
         
         
-        //$scorecard[]= Helpers::getExercise($survey_v1["typeofexercise"],$survey_v1["exerciseperweek30min"]);*/
         return json_encode($scorecard);
     }
     
