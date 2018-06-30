@@ -111,8 +111,12 @@ class AnalysisController extends Controller {
         $scorecard[]= Helpers::getTriglycerides($visit["triglycerides"]);
         $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"]);
         $scorecard[]= Helpers::getWaist($visit["waist"],$patient["southasian"],$patient["gender"]);
-        if($survey_v1["typeofexercise"]!="" && $survey_v1["typeofexercise"]!=null){
+        if($survey_v1["physicallyactive"]=="Y"){
             $scorecard[]= Helpers::getExercise($survey_v1["typeofexercise"],$survey_v1["exerciseperweek30min"]);
+        }
+        if($survey_v1["doyousmoke"]=="Smoker"){
+            $scorecard[]= Helpers::getSmoker($survey_v1["doyousmokecigarette"],'Cigarettes',$patient["gender"]);
+            $scorecard[]= Helpers::getSmoker($survey_v1["doyousmokeshisha"],'Shisha',$patient["gender"]);
         }
         return json_encode($scorecard);
     }
@@ -122,33 +126,220 @@ class AnalysisController extends Controller {
         $goalsetting=array(
             'hba1c_message'=>'',
             'hba1c_status'=>'',
+            'hdlc_message'=>'',
+            'hdlc_status'=>'',
+            'triglycerides_message'=>'',
+            'triglycerides_status'=>'',
+            'ldlc_message'=>'',
+            'ldlc_status'=>'',
+            'totalcholesterol_message'=>'',
+            'totalcholesterol_status'=>'',
+            'bloodpressure_message'=>'',
+            'bloodpressure_status'=>'',
+            'exercise_message'=>'',
+            'exercise_status'=>'',
+            'smoker_cigarette_message'=>'',
+            'smoker_cigarette_status'=>'',
+            'smoker_shisha_message'=>'',
+            'smoker_shisha_status'=>'',
         );
 
        
 
         $visit1=Helpers::getPatientVisitData($medicalno,$visitno1);
         $visit2=Helpers::getPatientVisitData($medicalno,$visitno2);
+        $survey_v1_1=Helpers::getSurveyData_v1($medicalno,$visitno1);
+        $survey_v1_2=Helpers::getSurveyData_v1($medicalno,$visitno2);
 
         $hba1c= Helpers::getHbA1C($visit2["hba1c"]);
- 
+        $hdlc= Helpers::getHDLC($visit2["hdlc"],"N");
+        $triglycerides= Helpers::getTriglycerides($visit2["triglycerides"]);
+        $ldlc= Helpers::getLDLC($visit2["ldlc"]);
+        $totalcholesterol= Helpers::getCholesterol($visit2["cholesterol"],"Y");
+        $bloodpresure= Helpers::getBloodPressure($visit2["bpsystolic"],$visit2["bpdiastolic"]);
+        if($survey_v1_2["physicallyactive"]=="Y" ){
+            if($survey_v1_2["typeofexercise"]=="Moderate"){
+                $exercise= Helpers::getExercise("Moderate",$survey_v1_2["exerciseperweek30min"]);
+            }else{
+                $exercise= Helpers::getExercise("Vigorous",$survey_v1_2["exerciseperweek15min"]);
+            }
+        }
+        if($survey_v1_1["doyousmoke"]=="Non-Smoker"){
+            $smoking_cigarette_v1= Helpers::getSmoker(0,'Cigarettes','Male');
+            $smoking_shisha_v1= Helpers::getSmoker(0,'Shisha','Male');
+        }else{
+            $smoking_cigarette_v1= Helpers::getSmoker($survey_v1_1["doyousmokecigarette"],'Cigarettes','Male');
+            $smoking_shisha_v1= Helpers::getSmoker($survey_v1_1["doyousmokeshisha"],'Shisha','Male');
+        }
+
+        if($survey_v1_2["doyousmoke"]=="Non-Smoker"){
+            $smoking_cigarette_v2= Helpers::getSmoker(0,'Cigarettes','Male');
+            $smoking_shisha_v2= Helpers::getSmoker(0,'Shisha','Male');
+        }else{
+            $smoking_cigarette_v2= Helpers::getSmoker($survey_v1_2["doyousmokecigarette"],'Cigarettes','Male');
+            $smoking_shisha_v2= Helpers::getSmoker($survey_v1_2["doyousmokeshisha"],'Shisha','Male');
+        }
+        
        //HbA1c
         if((int)$hba1c["result"]==(int)$hba1c["target_result"]){
-            $goalsetting["hba1c_message"]="Congratulations, your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalachieved"];
+            $goalsetting["hba1c_message"]="Congratulations, your HbA1c result is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalachieved"];
             $goalsetting["hba1c_status"]="achieved";
         }
         else if((int)$visit1["hba1c"]==(int)$visit2["hba1c"]){
             $goalsetting["hba1c_message"]=$hba1c["goalnochange"];
             $goalsetting["hba1c_status"]="nochange";
         }else if((int)$visit1["hba1c"]>(int)$visit2["hba1c"]){
-            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalimprove"];
+            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalimprove"];
             $goalsetting["hba1c_status"]="improve";
         }else if((int)$visit1["hba1c"]<(int)$visit2["hba1c"]){
-            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."] ".$hba1c["goalworsen"];
+            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalworsen"];
             $goalsetting["hba1c_status"]="worsen";
         }
+
+        //hdlc
+        if((int)$hdlc["result"]==(int)$hdlc["target_result"]){
+            $goalsetting["hdlc_message"]="Congratulations, your HDLC result is [".$hdlc["result"].$hdlc["unit"]."]. ".$hdlc["goalachieved"];
+            $goalsetting["hdlc_status"]="achieved";
+        }
+        else if((int)$visit1["hdlc"]==(int)$visit2["hdlc"]){
+            $goalsetting["hdlc_message"]="Your HDLC result is [".$hdlc["result"].$hdlc["unit"]."]. ".$hdlc["goalnochange"];
+            $goalsetting["hdlc_status"]="nochange";
+        }else if((int)$visit1["hdlc"]<(int)$visit2["hdlc"]){
+            $goalsetting["hdlc_message"]="Your HDLC result has increased from [".$visit1["hdlc"].$hdlc["unit"]."] to [".$visit2["hdlc"].$hdlc["unit"]."]. ".$hdlc["goalimprove"];
+            $goalsetting["hdlc_status"]="improve";
+        }else if((int)$visit1["hdlc"]>(int)$visit2["hdlc"]){
+            $goalsetting["hdlc_message"]="Your HDLC result has decreased from [".$visit1["hdlc"].$hdlc["unit"]."] to [".$visit2["hdlc"].$hdlc["unit"]."]. ".$hdlc["goalworsen"];
+            $goalsetting["hdlc_status"]="worsen";
+        }
         
+        //Triglycerides
+        if((int)$triglycerides["result"]<=(int)$triglycerides["target_result"]){
+            $goalsetting["triglycerides_message"]="Congratulations, your Triglycerides result is [".$triglycerides["result"].$triglycerides["unit"]."]. ".$triglycerides["goalachieved"];
+            $goalsetting["triglycerides_status"]="achieved";
+        }
+        else if((int)$visit1["triglycerides"]==(int)$visit2["triglycerides"]){
+            $goalsetting["triglycerides_message"]="Your Triglycerides result is [".$triglycerides["result"].$triglycerides["unit"]."]. ".$triglycerides["goalnochange"];
+            $goalsetting["triglycerides_status"]="nochange";
+        }else if((int)$visit1["triglycerides"]>(int)$visit2["triglycerides"]){
+            $goalsetting["triglycerides_message"]="Your Triglycerides result has decreased from [".$visit1["triglycerides"].$triglycerides["unit"]."] to [".$visit2["triglycerides"].$triglycerides["unit"]."]. ".$triglycerides["goalimprove"];
+            $goalsetting["triglycerides_status"]="improve";
+        }else if((int)$visit1["triglycerides"]<(int)$visit2["triglycerides"]){
+            $goalsetting["triglycerides_message"]="Your Triglycerides result has increased from [".$visit1["triglycerides"].$triglycerides["unit"]."] to [".$visit2["triglycerides"].$triglycerides["unit"]."]. ".$triglycerides["goalworsen"];
+            $goalsetting["triglycerides_status"]="worsen";
+        }
+
+        //LDLC
+        if((int)$ldlc["result"]<=(int)$ldlc["target_result"]){
+            $goalsetting["ldlc_message"]="Congratulations, your LDLC result is [".$ldlc["result"].$ldlc["unit"]."]. ".$ldlc["goalachieved"];
+            $goalsetting["ldlc_status"]="achieved";
+        }
+        else if((int)$visit1["ldlc"]==(int)$visit2["ldlc"]){
+            $goalsetting["ldlc_message"]="Your LDLC result is [".$ldlc["result"].$ldlc["unit"]."]. ".$ldlc["goalnochange"];
+            $goalsetting["ldlc_status"]="nochange";
+        }else if((int)$visit1["ldlc"]>(int)$visit2["ldlc"]){
+            $goalsetting["ldlc_message"]="Your LDLC result has decreased from [".$visit1["ldlc"].$ldlc["unit"]."] to [".$visit2["ldlc"].$ldlc["unit"]."]. ".$ldlc["goalimprove"];
+            $goalsetting["ldlc_status"]="improve";
+        }else if((int)$visit1["ldlc"]<(int)$visit2["ldlc"]){
+            $goalsetting["ldlc_message"]="Your LDLC result has increased from [".$visit1["ldlc"].$ldlc["unit"]."] to [".$visit2["ldlc"].$ldlc["unit"]."]. ".$ldlc["goalworsen"];
+            $goalsetting["ldlc_status"]="worsen";
+        }
+
+        //Total Cholesterol
+        if((int)$totalcholesterol["result"]<=(int)$totalcholesterol["target_result"]){
+            $goalsetting["totalcholesterol_message"]="Congratulations, your Total Cholesterol result is [".$totalcholesterol["result"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalachieved"];
+            $goalsetting["totalcholesterol_status"]="achieved";
+        }
+        else if((int)$visit1["cholesterol"]==(int)$visit2["cholesterol"]){
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result is [".$totalcholesterol["result"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalnochange"];
+            $goalsetting["totalcholesterol_status"]="nochange";
+        }else if((int)$visit1["cholesterol"]>(int)$visit2["cholesterol"]){
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has decreased from [".$visit1["cholesterol"].$totalcholesterol["unit"]."] to [".$visit2["cholesterol"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalimprove"];
+            $goalsetting["totalcholesterol_status"]="improve";
+        }else if((int)$visit1["cholesterol"]<(int)$visit2["cholesterol"]){
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has increased from [".$visit1["cholesterol"].$totalcholesterol["unit"]."] to [".$visit2["cholesterol"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalworsen"];
+            $goalsetting["totalcholesterol_status"]="worsen";
+        }
         
+
+        //Blood Pressure
+        if((91>=(int)$visit2["bpsystolic"] && 120<=(int)$visit2["bpsystolic"]) || (61>=(int)$visit2["bpdiastolic"] && 80<=(int)$visit2["bpdiastolic"])){
+            $goalsetting["bloodpressure_message"]="Congratulations, your Blood Pressure result is ".$bloodpresure["result_systolic"]."/".$bloodpresure["result_diastolic"].". ".$bloodpresure["goalachieved"];
+            $goalsetting["bloodpressure_status"]="achieved";
+        }else if((int)$visit1["bpsystolic"]==(int)$visit2["bpsystolic"]  &&  (int)$visit1["bpdiastolic"]==(int)$visit2["bpdiastolic"]){
+            $goalsetting["bloodpressure_message"]=$bloodpresure["result1"].". ".$bloodpresure["goalnochange"];
+            $goalsetting["bloodpressure_status"]="nochange";
+        }else if((int)$visit1["bpsystolic"]<(int)$visit2["bpsystolic"]  ||  (int)$visit1["bpdiastolic"]<(int)$visit2["bpdiastolic"]){
+            $goalsetting["bloodpressure_message"]=$bloodpresure["result1"].". ".$bloodpresure["goalincrease"];
+            $goalsetting["bloodpressure_status"]="increase";
+        }else if((int)$visit1["bpsystolic"]>(int)$visit2["bpsystolic"]  ||  (int)$visit1["bpdiastolic"]>(int)$visit2["bpdiastolic"]){
+            $goalsetting["bloodpressure_message"]=$bloodpresure["result1"].". ".$bloodpresure["goaldecrease"];
+            $goalsetting["bloodpressure_status"]="decrease";
+        }
+
+         //Exercise
+         if($survey_v1_2["physicallyactive"]=="Y" ){
+            if($survey_v1_2["typeofexercise"]=="Moderate"){
+                if((int)$survey_v1_2["exerciseperweek30min"]==7){
+                    $goalsetting["exercise_message"]=$exercise["goalachieved"];
+                    $goalsetting["exercise_status"]="achieved";
+                }else if((int)$survey_v1_1["exerciseperweek30min"]==(int)$survey_v1_2["exerciseperweek30min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalnochange"];
+                    $goalsetting["exercise_status"]="nochange";
+                }else if((int)$survey_v1_1["exerciseperweek30min"]<(int)$survey_v1_2["exerciseperweek30min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalimprove"];
+                    $goalsetting["exercise_status"]="improve";
+                }else if((int)$survey_v1_1["exerciseperweek30min"]>(int)$survey_v1_2["exerciseperweek30min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalworsen"];
+                    $goalsetting["exercise_status"]="worsen";
+                }
+
+            }else if($survey_v1_2["typeofexercise"]=="Vigorous"){
+                if((int)$survey_v1_2["exerciseperweek15min"]==7){
+                    $goalsetting["exercise_message"]=$exercise["goalachieved"];
+                    $goalsetting["exercise_status"]="achieved";
+                }else if((int)$survey_v1_1["exerciseperweek15min"]==(int)$survey_v1_2["exerciseperweek15min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalnochange"];
+                    $goalsetting["exercise_status"]="nochange";
+                }else if((int)$survey_v1_1["exerciseperweek15min"]<(int)$survey_v1_2["exerciseperweek15min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalimprove"];
+                    $goalsetting["exercise_status"]="improve";
+                }else if((int)$survey_v1_1["exerciseperweek15min"]>(int)$survey_v1_2["exerciseperweek15min"]){
+                    $goalsetting["exercise_message"]=$exercise["goalworsen"];
+                    $goalsetting["exercise_status"]="worsen";
+                }
+            }
+        }
         
+        if((int)$smoking_cigarette_v2["result_points"]==0){
+            $goalsetting["smoker_cigarette_message"]=$smoking_cigarette_v2["goalachieved"];
+            $goalsetting["smoker_cigarette_status"]="achieved";
+        }else if((int)$smoking_cigarette_v1["result_points"]==(int)$smoking_cigarette_v2["result_points"]){
+            $goalsetting["smoker_cigarette_message"]=$smoking_cigarette_v2["goalnochange"];
+            $goalsetting["smoker_cigarette_status"]="nochange";
+        }else if((int)$smoking_cigarette_v2["result_points"]>(int)$smoking_cigarette_v1["result_points"]){
+            $goalsetting["smoker_cigarette_message"]=$smoking_cigarette_v2["goalworsen"];
+            $goalsetting["smoker_cigarette_status"]="worsen";
+        }else if((int)$smoking_cigarette_v2["result_points"]<(int)$smoking_cigarette_v1["result_points"]){
+            $goalsetting["smoker_cigarette_message"]=$smoking_cigarette_v2["goalimprove"];
+            $goalsetting["smoker_cigarette_status"]="improve";
+        }
+
+        if((int)$smoking_shisha_v2["result_points"]==0){
+            $goalsetting["smoker_shisha_message"]=$smoking_shisha_v2["goalachieved"];
+            $goalsetting["smoker_shisha_status"]="achieved";
+        }else if((int)$smoking_shisha_v1["result_points"]==(int)$smoking_shisha_v2["result_points"]){
+            $goalsetting["smoker_shisha_message"]=$smoking_shisha_v2["goalnochange"];
+            $goalsetting["smoker_shisha_status"]="nochange";
+        }else if((int)$smoking_shisha_v2["result_points"]>(int)$smoking_shisha_v1["result_points"]){
+            $goalsetting["smoker_shisha_message"]=$smoking_shisha_v2["goalworsen"];
+            $goalsetting["smoker_shisha_status"]="worsen";
+        }else if((int)$smoking_shisha_v2["result_points"]<(int)$smoking_shisha_v1["result_points"]){
+            $goalsetting["smoker_shisha_message"]=$smoking_shisha_v2["goalimprove"];
+            $goalsetting["smoker_shisha_status"]="improve";
+        }
+
+        
+
         
         
         return json_encode($goalsetting);

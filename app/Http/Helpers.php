@@ -10,34 +10,42 @@ class Helpers{
         $data=array(
             'seq'=>'',
             'test'=>'Blood Pressure',
-            'target'=>'120/80 mmHg',
+            'unit'=>'mmHg',
+            'target'=>'120/80mmHg',
             'target_points'=>'0',
-            'result'=>'',
-            'result1'=>'',
+            'target_result_diastolic'=>'120',
+            'target_result_systolic'=>'80',
+            'result_diastolic'=>$diastolic,
+            'result_systolic'=>$systolic,
+            'result1'=>'Your blood pressure today is '.$systolic.'/'.$diastolic,
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
-            'message'=>''
+            'message'=>'',
+            'goalincrease'=>'',
+            'goaldecrease'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
 
+        
 
-        $results= DB::select("select message,mark,points,color from bloodpressurescore where
+
+
+        $results= DB::select("select goalincrease,goaldecrease,goalnochange,goalachieved,message,mark,points,color from bloodpressurescore where
         (:systolic>=systolicfrom and :systolic <=systolicto) or (:diastolic>=diastolicfrom and :diastolic<=diastolicto) order by points desc limit 1",
         ['systolic'=>$systolic,'diastolic'=>$diastolic]);
         
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Blood Pressure',
-                'target'=>'120/80 mmHg',
-                'target_points'=>'0',
-                'result'=>$systolic.'/'.$diastolic,
-                'result1'=>'Your blood pressure today is '.$systolic.'/'.$diastolic,
-                'risk_category'=>$results[0]->mark,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-                'message'=>$results[0]->message,
-            );
+            $data["result"]=$systolic.'/'.$diastolic;
+            $data["risk_category"]=$results[0]->mark;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["message"]=$results[0]->message;
+            $data["goalincrease"]=$results[0]->goalincrease;
+            $data["goaldecrease"]=$results[0]->goaldecrease;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
         }
 
         return $data;
@@ -58,6 +66,7 @@ class Helpers{
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
+            'colorcode'=>'',
             'message'=>'',
             'goalimprove'=>'',
             'goalworsen'=>'',
@@ -70,7 +79,7 @@ class Helpers{
             $data["target_points"]=$results[0]->points;
         }
 
-        $results= DB::select("select goalimprove,goalworsen,goalnochange,goalachieved,messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
+        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
         where :value>=perfrom AND :value<=perto",
         ['value'=>$value]);
         if($results>0){
@@ -81,6 +90,7 @@ class Helpers{
             $data["goalworsen"]=$results[0]->goalworsen;
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
+            $data["colorcode"]=$results[0]->colorcode;
             if($value>=6.5){
                 $data["message"]=$results[0]->messagediabetic;
             }else{
@@ -97,30 +107,39 @@ class Helpers{
             'seq'=>'',
             'test'=>'Cholesterol',
             'target'=>'Below 189mg/dL',
+            'unit'=>'mg/dL',
             'target_points'=>'0',
-            'result'=>'',
-            'result1'=>'',
+            'target_result'=>'189',
+            'result'=>$value,
+            'result1'=>'Your total cholesterol result is '.$value.' mg/dL',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
+            'colorcode'=>'',
             'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
+        $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='TotalCholesterol'");
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
 
-        $results= DB::select("select message,messageforsmoker,riskcategory,points,color from lipidscore 
+        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
             where test='TotalCholesterol' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Cholesterol',
-                'target'=>'Below 189mg/dL',
-                'target_points'=>'0',
-                'result'=>$value.'mg/dL',
-                'result1'=>'Your total cholesterol result is '.$value.' mg/dL',
-                'risk_category'=>$results[0]->riskcategory,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color
-            );
+            $data["risk_category"]=$results[0]->riskcategory;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["colorcode"]=$results[0]->colorcode;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
+
             if($smoker=="Y"){
                 $data["message"]=$results[0]->messageforsmoker;
             }else{
@@ -135,34 +154,44 @@ class Helpers{
 
         $data=array(
             'seq'=>'',
+            'unit'=>'mg/dL',
             'test'=>'LDLC',
-            'target'=>'Below 99 mg/dL',
+            'target'=>'Below 99mg/dL',
+            'target_result'=>'99',
             'target_points'=>'0',
-            'result'=>'',
-            'result1'=>'',
+            'result'=>$value,
+            'result1'=>'Your LDLC (or bad cholesterol) result is '.$value.'mg/dL.',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
+            'colorcode'=>'',
             'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
 
+        $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='LDLC'");
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
 
-        $results= DB::select("select message,riskcategory,points,color from lipidscore 
+
+        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
             where test='LDLC' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'LDLC',
-                'target'=>'Below 99 mg/dL',
-                'target_points'=>'0',
-                'result'=>$value.'mg/dL',
-                'result1'=>'Your LDLC (or bad cholesterol) result is '.$value.'mg/dL.',
-                'risk_category'=>$results[0]->riskcategory,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-                'message'=>$results[0]->message,
-            );  
+            $data["risk_category"]=$results[0]->riskcategory;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["message"]=$results[0]->message;
+            $data["target_points"]=$results[0]->points;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
+            $data["colorcode"]=$results[0]->colorcode;
         }
 
         return $data;
@@ -173,32 +202,43 @@ class Helpers{
         $data=array(
             'seq'=>'',
             'test'=>'HDLC',
+            'unit'=>'mg/dL',
             'target'=>'Above 60 mg/dL',
             'target_points'=>'0',
-            'result'=>'',
-            'result1'=>'',
+            'target_result'=>'60',
+            'result'=>$value,
+            'result1'=>'Your HDLC (or good cholesterol) result is '.$value.'mg/dL',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
-            'message'=>''
+            'colorcode'=>'',
+            'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
 
-        $results= DB::select("select message,messageforsmoker,riskcategory,points,color from lipidscore 
+
+        $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='HDLC'");
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
+
+
+        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
             where test='HDLC' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'HDLC',
-                'target'=>'Above 60 mg/dL',
-                'target_points'=>'0',
-                'result'=>$value.'mg/dL',
-                'result1'=>'Your HDLC (or good cholesterol) result is '.$value.'mg/dL',
-                'risk_category'=>$results[0]->riskcategory,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color
-            );
-
+            $data["risk_category"]=$results[0]->riskcategory;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["result_points"]=$results[0]->points;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
+            $data["colorcode"]=$results[0]->colorcode;
             if($smoker=="Y"){
                 $data["message"]=$results[0]->messageforsmoker;
             }else{
@@ -213,33 +253,47 @@ class Helpers{
 
         $data=array(
             'seq'=>'',
+            'unit'=>'mg/dL',
             'test'=>'Triglycerides',
             'target'=>'Below 150mg/dL',
             'target_points'=>'0',
-            'result'=>$value.'mg/dL',
+            'target_result'=>'150',
+            'result'=>$value,
             'result1'=>'',
+            'result1'=>'Your Triglyceride (TG) result is '.$value.'mg/dL.',
             'risk_category'=>'',
             'result_points'=>'',
-            'color'=>''
+            'color'=>'',
+            'colorcode'=>'',
+            'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
 
 
-        $results= DB::select("select message,riskcategory,points,color from lipidscore 
+
+        $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='Triglycerides'");
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
+
+        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
             where test='Triglycerides' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Triglycerides',
-                'target'=>'Below 150mg/dL',
-                'target_points'=>'0',
-                'result'=>$value.'mg/dL',
-                'result1'=>'Your Triglyceride (TG) result is '.$value.'mg/dL.',
-                'risk_category'=>$results[0]->riskcategory,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-                'message'=>$results[0]->message,
-            );
+            $data["risk_category"]=$results[0]->riskcategory;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["message"]=$results[0]->message;
+            $data["target_points"]=$results[0]->points;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
+            $data["colorcode"]=$results[0]->colorcode;
+          
         }
 
         return $data;
@@ -250,6 +304,7 @@ class Helpers{
         $data=array(
             'seq'=>'',
             'test'=>'BMI',
+            'unit'=>'kg/m2',
             'target'=>'18.5-24.9kg/m2',
             'target_points'=>'0',
             'result'=>'',
@@ -293,9 +348,10 @@ class Helpers{
             $data=array(
                 'seq'=>'',
                 'test'=>'BMI',
+                'unit'=>'kg/m2',
                 'target'=>'18.5-24.9kg/m2',
                 'target_points'=>'0',
-                'result'=>$value.' kg/m2',
+                'result'=>$value,
                 'result1'=>'Your BMI is '.$value.'kg/m2.',
                 'risk_category'=>$results[0]->mark,
                 'result_points'=>$results[0]->points,
@@ -346,7 +402,7 @@ class Helpers{
         return $data;
     }
 
-    public static function getSmoker($value){
+    public static function getSmoker($value,$type,$gender){
 
         $data=array(
             'seq'=>'',
@@ -356,24 +412,27 @@ class Helpers{
             'result'=>'',
             'risk_category'=>'',
             'result_points'=>'',
-            'color'=>''
+            'color'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
+            'color'=>'',
         );
 
-        $results= DB::select("select mark,points,color from waistscore
-        where nationality=:nationality and gender=:gender and :value>=waistfrom AND :value<=waistto",
-        ['nationality'=>$nationality,'gender'=>$gender,'value'=>$value]);
+        $results= DB::select("select color,perday,goalimprove,goalworsen,goalnochange,goalachieved,points from lifestylescore_smoking
+        where smoking=:type and gender=:gender and perday=:value",
+        ['type'=>$type,'gender'=>$gender,'value'=>$value]);
         
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Smoking',
-                'target'=>'Non-smoker',
-                'target_points'=>'0',
-                'result'=>$value,
-                'risk_category'=>'',
-                'result_points'=>'',
-                'color'=>''
-            );
+                $data["test"]='Smoking '.$type;
+                $data["result"]=$results[0]->perday; 
+                $data["result_points"]=$results[0]->points;
+                $data["goalimprove"]=$results[0]->goalimprove;
+                $data["goalworsen"]=$results[0]->goalworsen;
+                $data["goalnochange"]=$results[0]->goalnochange;
+                $data["goalachieved"]=$results[0]->goalachieved;
+                $data["color"]=$results[0]->color;
         }
 
         return $data;
@@ -381,62 +440,43 @@ class Helpers{
     
 
     public static function getExercise($exercise,$days){
-        if($exercise=="Vigorous"){
             $data=array(
                 'seq'=>'',
-                'test'=>'Vigorous Exercise',
+                'test'=>$exercise.' Exercise',
                 'target'=>'Everyday',
-                'target_points'=>'0',
+                'target_points'=>'10',
                 'result'=>'',
                 'risk_category'=>'',
                 'result_points'=>'',
-                'color'=>''
+                'color'=>'',
+                'goalimprove'=>'',
+                'goalworsen'=>'',
+                'goalnochange'=>'',
+                'goalachieved'=>'',
             );
-        }else{
-            $data=array(
-                'seq'=>'',
-                'test'=>'Moderate Exercise',
-                'target'=>'Everyday',
-                'target_points'=>'0',
-                'result'=>'',
-                'risk_category'=>'',
-                'result_points'=>'',
-                'color'=>''
-            );
-        }
 
-        $results= DB::select("select distinct riskcategory,points,color from lifestylescore_exercise 
+        $results= DB::select("select distinct goalimprove,goalworsen,goalnochange,goalachieved,riskcategory,points,color from lifestylescore_exercise 
         where exercise=:exercise and days=:days",
         ['exercise'=>$exercise,'days'=>$days]);
         
         if($results>0){
-            if($exercise=="Vigorous"){
                 $data=array(
                     'seq'=>'',
-                    'test'=>'Vigorous Exercise',
+                    'test'=>$exercise.' Exercise',
                     'target'=>'Everyday',
-                    'target_points'=>'0',
+                    'target_points'=>'10',
                     'result'=>$days.' day(s)',
                     'risk_category'=>$results[0]->riskcategory,
                     'result_points'=>$results[0]->points,
-                    'color'=>$results[0]->color
-            );
-        }else{
-            if($exercise=="Vigorous"){
-                $data=array(
-                    'seq'=>'',
-                    'test'=>'Moderate Exercise',
-                    'target'=>'Everyday',
-                    'target_points'=>'0',
-                    'result'=>$days.' day(s)',
-                    'risk_category'=>$results[0]->riskcategory,
-                    'result_points'=>$results[0]->points,
-                    'color'=>$results[0]->color
-            );
-            }
+                    'color'=>$results[0]->color,
+                    'goalimprove'=>$results[0]->goalimprove,
+                    'goalworsen'=>$results[0]->goalworsen,
+                    'goalnochange'=>$results[0]->goalnochange,
+                    'goalachieved'=>$results[0]->goalachieved,
+                );
+           
 
         }
-    }
 
         return $data;
     }
@@ -497,18 +537,25 @@ class Helpers{
     public static function getSurveyData_v1($medicalno,$visitno){
         $data=array(
             'typeofexercise'=>'',
-            'exerciseperweek30min'=>'',
+            'exerciseperweek30min'=>'0',
+            'exerciseperweek15min'=>'0',
             'doyousmokecigarette'=>'',
-            'doyousmoke'=>''
+            'doyousmokeshisha'=>'',
+            'doyousmoke'=>'',
+            'physicallyactive'=>'N',
         );
 
-        $results= DB::select("select case when doyousmokecigarette='No' and doyousmokeshisha='No' then 'Non-Smoker' else 'Smoker' end as doyousmoke,case when doyousmokecigarette='No' then 'N' else 'Y' end as doyousmokecigarette, typeofexercise,exerciseperweek30min from survey_v1  where medicalno=:medicalno and visitno=:visitno",
+        $results= DB::select("select doyousmokecigarette,doyousmokeshisha,case when doyousmoke='N' then 'Non-Smoker' else 'Smoker' end as doyousmoke, physicallyactive,typeofexercise,exerciseperweek30min,exerciseperweek15min from survey_v1  where medicalno=:medicalno and visitno=:visitno",
         ['medicalno'=>$medicalno,'visitno'=>$visitno]);
         if($results){
             $data["typeofexercise"]=$results[0]->typeofexercise;
             $data["doyousmokecigarette"]=$results[0]->doyousmokecigarette;
+            $data["doyousmokeshisha"]=$results[0]->doyousmokeshisha;
             $data["exerciseperweek30min"]=$results[0]->exerciseperweek30min;
+            $data["exerciseperweek15min"]=$results[0]->exerciseperweek15min;
             $data["doyousmoke"]=$results[0]->doyousmoke;
+            $data["physicallyactive"]=$results[0]->physicallyactive;
+            
         }
 
         return $data;
