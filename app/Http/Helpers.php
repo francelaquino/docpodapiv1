@@ -186,7 +186,6 @@ class Helpers{
             $data["result_points"]=$results[0]->points;
             $data["color"]=$results[0]->color;
             $data["message"]=$results[0]->message;
-            $data["target_points"]=$results[0]->points;
             $data["goalimprove"]=$results[0]->goalimprove;
             $data["goalworsen"]=$results[0]->goalworsen;
             $data["goalnochange"]=$results[0]->goalnochange;
@@ -287,7 +286,6 @@ class Helpers{
             $data["result_points"]=$results[0]->points;
             $data["color"]=$results[0]->color;
             $data["message"]=$results[0]->message;
-            $data["target_points"]=$results[0]->points;
             $data["goalimprove"]=$results[0]->goalimprove;
             $data["goalworsen"]=$results[0]->goalworsen;
             $data["goalnochange"]=$results[0]->goalnochange;
@@ -304,8 +302,8 @@ class Helpers{
         $data=array(
             'seq'=>'',
             'test'=>'BMI',
-            'unit'=>'kg/m2',
-            'target'=>'18.5-24.9kg/m2',
+            'unit'=>'kg/m²',
+            'target'=>'18.5-24.9kg/m²',
             'target_points'=>'0',
             'result'=>'',
             'result1'=>'',
@@ -348,11 +346,11 @@ class Helpers{
             $data=array(
                 'seq'=>'',
                 'test'=>'BMI',
-                'unit'=>'kg/m2',
-                'target'=>'18.5-24.9kg/m2',
+                'unit'=>'kg/m²',
+                'target'=>'18.5-24.9kg/m²',
                 'target_points'=>'0',
                 'result'=>$value,
-                'result1'=>'Your BMI is '.$value.'kg/m2.',
+                'result1'=>'Your BMI is '.$value.'kg/m².',
                 'risk_category'=>$results[0]->mark,
                 'result_points'=>$results[0]->points,
                 'color'=>$results[0]->color,

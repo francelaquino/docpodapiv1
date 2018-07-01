@@ -39,7 +39,7 @@ class AnalysisController extends Controller {
 
         $prediabetic["age"]=$patient["age"];
         $prediabetic["gender"]=$patient["gender"];
-        $prediabetic["bmi"]=$visit["bmi"]."m/kg2";
+        $prediabetic["bmi"]=$visit["bmi"]."kg/m²";
 
         if($results){
             $prediabetic["agescore"]=$results[0]->points;
