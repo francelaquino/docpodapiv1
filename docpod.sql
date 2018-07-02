@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.6.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Jun 30, 2018 at 05:38 PM
--- Server version: 5.7.19
--- PHP Version: 5.6.31
+-- Host: 127.0.0.1
+-- Generation Time: Jul 02, 2018 at 02:08 PM
+-- Server version: 5.7.14
+-- PHP Version: 7.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -28,9 +26,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `bloodpressurescore`
 --
 
-DROP TABLE IF EXISTS `bloodpressurescore`;
-CREATE TABLE IF NOT EXISTS `bloodpressurescore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `bloodpressurescore` (
+  `id` int(11) NOT NULL,
   `mark` varchar(50) DEFAULT NULL,
   `systolicfrom` int(11) DEFAULT NULL,
   `systolicto` int(11) DEFAULT NULL,
@@ -43,9 +40,8 @@ CREATE TABLE IF NOT EXISTS `bloodpressurescore` (
   `goalincrease` varchar(2000) NOT NULL,
   `goaldecrease` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
-  `goalachieved` varchar(2000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `goalachieved` varchar(2000) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bloodpressurescore`
@@ -64,9 +60,8 @@ INSERT INTO `bloodpressurescore` (`id`, `mark`, `systolicfrom`, `systolicto`, `d
 -- Table structure for table `bmiscore`
 --
 
-DROP TABLE IF EXISTS `bmiscore`;
-CREATE TABLE IF NOT EXISTS `bmiscore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `bmiscore` (
+  `id` int(11) NOT NULL,
   `nationality` varchar(50) DEFAULT NULL,
   `bmifrom` decimal(18,5) DEFAULT NULL,
   `bmito` decimal(18,5) DEFAULT NULL,
@@ -75,25 +70,28 @@ CREATE TABLE IF NOT EXISTS `bmiscore` (
   `points` int(11) NOT NULL,
   `color` varchar(50) NOT NULL,
   `message` varchar(1000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+  `goalimprove` varchar(2000) NOT NULL,
+  `goalworsen` varchar(2000) NOT NULL,
+  `goalnochange` varchar(2000) NOT NULL,
+  `goalachieved` varchar(2000) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bmiscore`
 --
 
-INSERT INTO `bmiscore` (`id`, `nationality`, `bmifrom`, `bmito`, `mark`, `prediabeticpoints`, `points`, `color`, `message`) VALUES
-(1, 'SA', '0.00000', '18.49999', 'Underweight', 0, 0, 'blue', 'This means you are slightly underweight. '),
-(2, 'SA', '18.50000', '22.99999', 'Healthy Weight', 1, 1, 'green', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
-(3, 'SA', '23.00000', '26.99999', 'Overweight', 2, 2, 'amber', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.'),
-(4, 'NSA', '0.00000', '18.49999', 'Underweight', 0, 0, 'blue', 'This means you are slightly underweight.'),
-(5, 'NSA', '18.50000', '24.99990', 'Healthy Weight', 1, 1, 'green', ' It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
-(6, 'NSA', '25.00000', '27.59999', 'Moderately Overweight', 2, 2, 'yellow', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.'),
-(7, 'NSA', '27.60000', '29.99990', 'Heavily Overweight', 2, 2, 'amber', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.'),
-(14, 'NSA', '40.00000', '60000.00000', 'Clinically Obese', NULL, 3, '', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
-(8, 'NSA', '30.00000', '34.99990', 'Moderately Obese', 3, 3, 'lightred', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
-(13, 'NSA', '35.00000', '39.99990', 'Heavily Obese', NULL, 3, '', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
-(9, 'SA', '27.00000', '800000.00000', 'Obese', 3, 3, 'lightred', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.');
+INSERT INTO `bmiscore` (`id`, `nationality`, `bmifrom`, `bmito`, `mark`, `prediabeticpoints`, `points`, `color`, `message`, `goalimprove`, `goalworsen`, `goalnochange`, `goalachieved`) VALUES
+(1, 'SA', '0.00000', '18.49999', 'Underweight', 0, 0, 'blue', 'This means you are slightly underweight. ', 'It means you are underweight', 'It means you are underweight', 'It means you are underweight', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(2, 'SA', '18.50000', '22.99999', 'Healthy Weight', 1, 10, 'green', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(3, 'SA', '23.00000', '26.99999', 'Overweight', 2, 2, 'amber', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.', 'A healthy weight for someone of your height is between ?kg and ?kg. It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(4, 'NSA', '0.00000', '18.49999', 'Underweight', 0, 0, 'blue', 'This means you are slightly underweight.', 'It means you are underweight', 'It means you are underweight', 'It means you are underweight', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(5, 'NSA', '18.50000', '24.99990', 'Healthy Weight', 1, 10, 'green', ' It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(6, 'NSA', '25.00000', '27.59999', 'Moderately Overweight', 2, 2, 'yellow', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.', ' It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(7, 'NSA', '27.60000', '29.99990', 'Heavily Overweight', 2, 2, 'amber', 'Once you reach a healthy weight, your risk of developing heart disease, diabetes, stroke, cancer and many other conditions is reduced.', ' It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(14, 'NSA', '40.00000', '60000.00000', 'Clinically Obese', NULL, 3, '', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', ' It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(8, 'NSA', '30.00000', '34.99990', 'Moderately Obese', 3, 3, 'lightred', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', ' It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(13, 'NSA', '35.00000', '39.99990', 'Heavily Obese', NULL, 3, '', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', ' It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.'),
+(9, 'SA', '27.00000', '800000.00000', 'Obese', 3, 3, 'lightred', 'The good news is that every kilogram you lose will reduce your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'A healthy weight for someone of your height is between ?kg and ?kg. It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It\'s not always easy losing weight, but the benefits start right away and are too good to ignore: Reaching a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.', 'It means you have a healthy weight. Having a healthy weight reduces your risk of developing heart disease, diabetes, stroke, cancer and many other conditions.');
 
 -- --------------------------------------------------------
 
@@ -101,11 +99,9 @@ INSERT INTO `bmiscore` (`id`, `nationality`, `bmifrom`, `bmito`, `mark`, `predia
 -- Table structure for table `colorcodes`
 --
 
-DROP TABLE IF EXISTS `colorcodes`;
-CREATE TABLE IF NOT EXISTS `colorcodes` (
+CREATE TABLE `colorcodes` (
   `colorname` varchar(50) NOT NULL,
-  `colorcode` varchar(50) NOT NULL,
-  PRIMARY KEY (`colorname`)
+  `colorcode` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -126,12 +122,10 @@ INSERT INTO `colorcodes` (`colorname`, `colorcode`) VALUES
 -- Table structure for table `company`
 --
 
-DROP TABLE IF EXISTS `company`;
-CREATE TABLE IF NOT EXISTS `company` (
+CREATE TABLE `company` (
   `ID` int(11) NOT NULL,
   `COMPANY` varchar(200) DEFAULT NULL,
-  `ACTIVE` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `ACTIVE` varchar(1) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -147,18 +141,16 @@ INSERT INTO `company` (`ID`, `COMPANY`, `ACTIVE`) VALUES
 -- Table structure for table `country`
 --
 
-DROP TABLE IF EXISTS `country`;
-CREATE TABLE IF NOT EXISTS `country` (
-  `ID` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `country` (
+  `ID` smallint(6) NOT NULL,
   `COUNTRY` varchar(100) NOT NULL,
   `ACTIVE` varchar(1) NOT NULL,
   `SOUTHASIAN` varchar(1) DEFAULT NULL,
   `GCC` varchar(1) NOT NULL,
   `WPR_A` varchar(1) NOT NULL,
   `EUR_A` varchar(1) NOT NULL,
-  `SE_ASIA` varchar(1) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=225 DEFAULT CHARSET=latin1;
+  `SE_ASIA` varchar(1) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `country`
@@ -396,16 +388,14 @@ INSERT INTO `country` (`ID`, `COUNTRY`, `ACTIVE`, `SOUTHASIAN`, `GCC`, `WPR_A`, 
 -- Table structure for table `cvdcategory`
 --
 
-DROP TABLE IF EXISTS `cvdcategory`;
-CREATE TABLE IF NOT EXISTS `cvdcategory` (
+CREATE TABLE `cvdcategory` (
   `category` varchar(10) NOT NULL,
   `agefrom` smallint(6) DEFAULT NULL,
   `ageto` smallint(6) DEFAULT NULL,
   `gender` varchar(10) DEFAULT NULL,
   `smoker` varchar(10) DEFAULT NULL,
   `hba1c` decimal(18,2) DEFAULT NULL,
-  `notdiabetic` varchar(1) NOT NULL,
-  PRIMARY KEY (`category`)
+  `notdiabetic` varchar(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -444,13 +434,11 @@ INSERT INTO `cvdcategory` (`category`, `agefrom`, `ageto`, `gender`, `smoker`, `
 -- Table structure for table `cvdcolor`
 --
 
-DROP TABLE IF EXISTS `cvdcolor`;
-CREATE TABLE IF NOT EXISTS `cvdcolor` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `cvdcolor` (
+  `id` int(11) NOT NULL,
   `risk` varchar(50) NOT NULL,
-  `colorname` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `colorname` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cvdcolor`
@@ -469,16 +457,14 @@ INSERT INTO `cvdcolor` (`id`, `risk`, `colorname`) VALUES
 -- Table structure for table `cvdriskmessage`
 --
 
-DROP TABLE IF EXISTS `cvdriskmessage`;
-CREATE TABLE IF NOT EXISTS `cvdriskmessage` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `cvdriskmessage` (
+  `id` int(11) NOT NULL,
   `risk` varchar(7) DEFAULT NULL,
   `gender` varchar(6) DEFAULT NULL,
   `smoker` varchar(6) DEFAULT NULL,
   `diabetic` varchar(1) DEFAULT NULL,
-  `message` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+  `message` varchar(1000) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cvdriskmessage`
@@ -532,10 +518,9 @@ INSERT INTO `cvdriskmessage` (`id`, `risk`, `gender`, `smoker`, `diabetic`, `mes
 -- Table structure for table `cvdscore`
 --
 
-DROP TABLE IF EXISTS `cvdscore`;
-CREATE TABLE IF NOT EXISTS `cvdscore` (
+CREATE TABLE `cvdscore` (
   `category` varchar(1) DEFAULT NULL,
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `totalcholesterol` decimal(10,2) DEFAULT NULL,
   `bpfrom` int(11) DEFAULT NULL,
   `bpto` int(11) DEFAULT NULL,
@@ -543,9 +528,8 @@ CREATE TABLE IF NOT EXISTS `cvdscore` (
   `messagegcc` varchar(1000) DEFAULT NULL,
   `riskeur_a` varchar(10) DEFAULT NULL,
   `riskwpr_a` varchar(10) DEFAULT NULL,
-  `riskseasia` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=641 DEFAULT CHARSET=utf8;
+  `riskseasia` varchar(10) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cvdscore`
@@ -1206,8 +1190,7 @@ INSERT INTO `cvdscore` (`category`, `id`, `totalcholesterol`, `bpfrom`, `bpto`, 
 -- Table structure for table `cvdscore_delete`
 --
 
-DROP TABLE IF EXISTS `cvdscore_delete`;
-CREATE TABLE IF NOT EXISTS `cvdscore_delete` (
+CREATE TABLE `cvdscore_delete` (
   `id` smallint(6) NOT NULL,
   `category` varchar(10) DEFAULT NULL,
   `tc` smallint(6) DEFAULT NULL,
@@ -1215,8 +1198,7 @@ CREATE TABLE IF NOT EXISTS `cvdscore_delete` (
   `bp2` smallint(6) DEFAULT NULL,
   `risk` varchar(50) DEFAULT NULL,
   `color` varchar(50) DEFAULT NULL,
-  `mark` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `mark` varchar(50) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -1551,9 +1533,8 @@ INSERT INTO `cvdscore_delete` (`id`, `category`, `tc`, `bp1`, `bp2`, `risk`, `co
 -- Table structure for table `goalsetting`
 --
 
-DROP TABLE IF EXISTS `goalsetting`;
-CREATE TABLE IF NOT EXISTS `goalsetting` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `goalsetting` (
+  `id` bigint(11) NOT NULL,
   `medicalno` bigint(11) DEFAULT NULL,
   `diabeticcategory` varchar(10) DEFAULT NULL,
   `hba1c` char(10) CHARACTER SET utf8mb4 DEFAULT NULL,
@@ -1577,8 +1558,7 @@ CREATE TABLE IF NOT EXISTS `goalsetting` (
   `datemodified` date DEFAULT NULL,
   `modifiedby` varchar(45) DEFAULT NULL,
   `height` decimal(10,5) DEFAULT NULL,
-  `weight` decimal(10,5) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `weight` decimal(10,5) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -1587,9 +1567,8 @@ CREATE TABLE IF NOT EXISTS `goalsetting` (
 -- Table structure for table `hba1cscore`
 --
 
-DROP TABLE IF EXISTS `hba1cscore`;
-CREATE TABLE IF NOT EXISTS `hba1cscore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `hba1cscore` (
+  `id` int(11) NOT NULL,
   `perfrom` decimal(18,2) DEFAULT NULL,
   `perto` decimal(18,2) DEFAULT NULL,
   `points` int(11) DEFAULT NULL,
@@ -1602,9 +1581,8 @@ CREATE TABLE IF NOT EXISTS `hba1cscore` (
   `goalworsen` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
   `goalachieved` varchar(2000) NOT NULL,
-  `colorcode` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+  `colorcode` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `hba1cscore`
@@ -1632,15 +1610,13 @@ INSERT INTO `hba1cscore` (`id`, `perfrom`, `perto`, `points`, `diabeticrisk`, `m
 -- Table structure for table `lifestylescore_age`
 --
 
-DROP TABLE IF EXISTS `lifestylescore_age`;
-CREATE TABLE IF NOT EXISTS `lifestylescore_age` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lifestylescore_age` (
+  `id` int(11) NOT NULL,
   `AgeFrom` int(11) DEFAULT NULL,
   `AgeTo` int(11) DEFAULT NULL,
   `Gender` varchar(50) DEFAULT NULL,
-  `Points` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  `Points` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `lifestylescore_age`
@@ -1666,9 +1642,8 @@ INSERT INTO `lifestylescore_age` (`id`, `AgeFrom`, `AgeTo`, `Gender`, `Points`) 
 -- Table structure for table `lifestylescore_exercise`
 --
 
-DROP TABLE IF EXISTS `lifestylescore_exercise`;
-CREATE TABLE IF NOT EXISTS `lifestylescore_exercise` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lifestylescore_exercise` (
+  `id` int(11) NOT NULL,
   `Exercise` varchar(50) DEFAULT NULL,
   `Days` int(11) DEFAULT NULL,
   `Gender` varchar(50) DEFAULT NULL,
@@ -1680,9 +1655,8 @@ CREATE TABLE IF NOT EXISTS `lifestylescore_exercise` (
   `goalimprove` varchar(2000) NOT NULL,
   `goalworsen` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
-  `goalachieved` varchar(2000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+  `goalachieved` varchar(2000) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `lifestylescore_exercise`
@@ -1729,15 +1703,13 @@ INSERT INTO `lifestylescore_exercise` (`id`, `Exercise`, `Days`, `Gender`, `Poin
 -- Table structure for table `lifestylescore_history`
 --
 
-DROP TABLE IF EXISTS `lifestylescore_history`;
-CREATE TABLE IF NOT EXISTS `lifestylescore_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lifestylescore_history` (
+  `id` int(11) NOT NULL,
   `History` varchar(50) DEFAULT NULL,
   `Answer` varchar(50) DEFAULT NULL,
   `Gender` varchar(50) DEFAULT NULL,
-  `Points` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+  `Points` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `lifestylescore_history`
@@ -1767,9 +1739,8 @@ INSERT INTO `lifestylescore_history` (`id`, `History`, `Answer`, `Gender`, `Poin
 -- Table structure for table `lifestylescore_smoking`
 --
 
-DROP TABLE IF EXISTS `lifestylescore_smoking`;
-CREATE TABLE IF NOT EXISTS `lifestylescore_smoking` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lifestylescore_smoking` (
+  `id` int(11) NOT NULL,
   `Smoking` varchar(50) DEFAULT NULL,
   `perday` varchar(50) NOT NULL,
   `PerDayFrom` int(11) DEFAULT NULL,
@@ -1781,9 +1752,8 @@ CREATE TABLE IF NOT EXISTS `lifestylescore_smoking` (
   `goalimprove` varchar(2000) NOT NULL,
   `goalworsen` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
-  `color` varchar(10) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+  `color` varchar(10) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `lifestylescore_smoking`
@@ -1826,9 +1796,8 @@ INSERT INTO `lifestylescore_smoking` (`id`, `Smoking`, `perday`, `PerDayFrom`, `
 -- Table structure for table `lipidscore`
 --
 
-DROP TABLE IF EXISTS `lipidscore`;
-CREATE TABLE IF NOT EXISTS `lipidscore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lipidscore` (
+  `id` int(11) NOT NULL,
   `test` varchar(50) DEFAULT NULL,
   `mgfrom` decimal(18,4) DEFAULT NULL,
   `mgto` decimal(18,4) DEFAULT NULL,
@@ -1842,9 +1811,8 @@ CREATE TABLE IF NOT EXISTS `lipidscore` (
   `goalworsen` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
   `goalachieved` varchar(2000) NOT NULL,
-  `colorcode` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+  `colorcode` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `lipidscore`
@@ -1873,12 +1841,10 @@ INSERT INTO `lipidscore` (`id`, `test`, `mgfrom`, `mgto`, `points`, `message`, `
 -- Table structure for table `maritalstatus`
 --
 
-DROP TABLE IF EXISTS `maritalstatus`;
-CREATE TABLE IF NOT EXISTS `maritalstatus` (
+CREATE TABLE `maritalstatus` (
   `ID` varchar(1) NOT NULL,
   `MARITALSTATUS` varchar(20) NOT NULL,
-  `ACTIVE` varchar(1) NOT NULL,
-  PRIMARY KEY (`ID`)
+  `ACTIVE` varchar(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -1897,10 +1863,9 @@ INSERT INTO `maritalstatus` (`ID`, `MARITALSTATUS`, `ACTIVE`) VALUES
 -- Table structure for table `patient`
 --
 
-DROP TABLE IF EXISTS `patient`;
-CREATE TABLE IF NOT EXISTS `patient` (
+CREATE TABLE `patient` (
   `gid` varchar(50) DEFAULT NULL,
-  `medicalno` int(11) NOT NULL AUTO_INCREMENT,
+  `medicalno` int(11) NOT NULL,
   `firstname` varchar(50) DEFAULT NULL,
   `secondname` varchar(50) DEFAULT NULL,
   `grandfathername` varchar(50) DEFAULT NULL,
@@ -1920,9 +1885,8 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `dateencoded` date DEFAULT NULL,
   `encodedby` varchar(50) DEFAULT NULL,
   `datemodified` date DEFAULT NULL,
-  `modifiedby` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`medicalno`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+  `modifiedby` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `patient`
@@ -1941,16 +1905,14 @@ INSERT INTO `patient` (`gid`, `medicalno`, `firstname`, `secondname`, `grandfath
 -- Table structure for table `prediabeticbmiscore`
 --
 
-DROP TABLE IF EXISTS `prediabeticbmiscore`;
-CREATE TABLE IF NOT EXISTS `prediabeticbmiscore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `prediabeticbmiscore` (
+  `id` int(11) NOT NULL,
   `nationality` varchar(50) DEFAULT NULL,
   `bmifrom` decimal(18,5) DEFAULT NULL,
   `bmito` decimal(18,5) DEFAULT NULL,
   `mark` varchar(50) DEFAULT NULL,
-  `points` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+  `points` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `prediabeticbmiscore`
@@ -1976,15 +1938,13 @@ INSERT INTO `prediabeticbmiscore` (`id`, `nationality`, `bmifrom`, `bmito`, `mar
 -- Table structure for table `prediabeticscore`
 --
 
-DROP TABLE IF EXISTS `prediabeticscore`;
-CREATE TABLE IF NOT EXISTS `prediabeticscore` (
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `prediabeticscore` (
+  `id` smallint(6) NOT NULL,
   `scorefrom` int(11) NOT NULL,
   `scoreto` int(11) NOT NULL,
   `color` varchar(10) NOT NULL,
-  `message` varchar(500) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `message` varchar(500) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `prediabeticscore`
@@ -2000,16 +1960,14 @@ INSERT INTO `prediabeticscore` (`id`, `scorefrom`, `scoreto`, `color`, `message`
 -- Table structure for table `prediabeticscore_age`
 --
 
-DROP TABLE IF EXISTS `prediabeticscore_age`;
-CREATE TABLE IF NOT EXISTS `prediabeticscore_age` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `prediabeticscore_age` (
+  `id` int(11) NOT NULL,
   `agefrom` int(11) DEFAULT NULL,
   `ageto` int(11) DEFAULT NULL,
   `points` int(11) DEFAULT NULL,
   `mark` varchar(50) DEFAULT NULL,
-  `color` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  `color` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `prediabeticscore_age`
@@ -2029,9 +1987,8 @@ INSERT INTO `prediabeticscore_age` (`id`, `agefrom`, `ageto`, `points`, `mark`, 
 -- Table structure for table `survey_v1`
 --
 
-DROP TABLE IF EXISTS `survey_v1`;
-CREATE TABLE IF NOT EXISTS `survey_v1` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `survey_v1` (
+  `id` int(11) NOT NULL,
   `medicalno` int(11) DEFAULT NULL,
   `visitno` int(11) DEFAULT NULL,
   `age` smallint(6) DEFAULT NULL,
@@ -2055,9 +2012,8 @@ CREATE TABLE IF NOT EXISTS `survey_v1` (
   `dateencoded` date DEFAULT NULL,
   `encodedby` varbinary(50) DEFAULT NULL,
   `datemodified` date DEFAULT NULL,
-  `modifiedby` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  `modifiedby` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `survey_v1`
@@ -2073,13 +2029,11 @@ INSERT INTO `survey_v1` (`id`, `medicalno`, `visitno`, `age`, `gender`, `diabete
 -- Table structure for table `unitused`
 --
 
-DROP TABLE IF EXISTS `unitused`;
-CREATE TABLE IF NOT EXISTS `unitused` (
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `unitused` (
+  `id` smallint(6) NOT NULL,
   `test` varchar(50) DEFAULT NULL,
-  `unit` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `unit` varchar(50) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `unitused`
@@ -2094,19 +2048,18 @@ INSERT INTO `unitused` (`id`, `test`, `unit`) VALUES
 -- Table structure for table `visits`
 --
 
-DROP TABLE IF EXISTS `visits`;
-CREATE TABLE IF NOT EXISTS `visits` (
-  `visitno` bigint(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `visits` (
+  `visitno` bigint(11) NOT NULL,
   `medicalno` int(11) DEFAULT NULL,
   `diabeticcategory` varchar(10) DEFAULT NULL,
   `hba1c` char(10) CHARACTER SET utf8mb4 DEFAULT NULL,
   `hdlc` int(11) DEFAULT NULL,
   `triglycerides` int(11) DEFAULT NULL,
   `ldlc` int(11) DEFAULT NULL,
-  `totalcholesterol` decimal(10,2) DEFAULT NULL,
+  `totalcholesterol` double DEFAULT NULL,
   `bpsystolic` int(11) DEFAULT NULL,
   `bpdiastolic` int(11) DEFAULT NULL,
-  `bmi` decimal(10,5) DEFAULT NULL,
+  `bmi` double DEFAULT NULL,
   `waist` int(11) DEFAULT NULL,
   `lipidprofile_status` varchar(1) DEFAULT 'N',
   `hba1c_status` varchar(1) DEFAULT 'N',
@@ -2119,18 +2072,17 @@ CREATE TABLE IF NOT EXISTS `visits` (
   `datecompleted` date DEFAULT NULL,
   `datemodified` date DEFAULT NULL,
   `modifiedby` varchar(45) DEFAULT NULL,
-  `height` decimal(10,5) DEFAULT NULL,
-  `weight` decimal(10,5) DEFAULT NULL,
-  PRIMARY KEY (`visitno`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+  `height` double DEFAULT NULL,
+  `weight` double DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `visits`
 --
 
 INSERT INTO `visits` (`visitno`, `medicalno`, `diabeticcategory`, `hba1c`, `hdlc`, `triglycerides`, `ldlc`, `totalcholesterol`, `bpsystolic`, `bpdiastolic`, `bmi`, `waist`, `lipidprofile_status`, `hba1c_status`, `bloodpressure_status`, `bmi_status`, `surveyno`, `status`, `datecreated`, `createdby`, `datecompleted`, `datemodified`, `modifiedby`, `height`, `weight`) VALUES
-(2, 22, NULL, '8', 40, 180, 130, '300.00', 190, 80, '40.00000', 95, 'N', 'N', 'N', 'N', NULL, 'Onprogress', '2017-11-07', 'currentuser', NULL, '2018-03-16', 'user', '1.61544', '80.00000'),
-(13, 22, NULL, '8', 30, 170, 120, '200.00', 180, 90, '0.16000', 2, 'N', 'N', 'N', 'N', NULL, NULL, '2018-03-08', 'user', NULL, '2018-06-10', 'user', '5.00000', '4.00000');
+(2, 22, NULL, '8', 40, 180, 130, 300, 190, 80, 29.3, 95, 'N', 'N', 'N', 'N', NULL, 'Onprogress', '2017-11-07', 'currentuser', NULL, '2018-07-02', 'user', 1.6, 75),
+(13, 22, NULL, '8', 30, 170, 120, 200, 180, 90, 28.12, 2, 'N', 'N', 'N', 'N', NULL, NULL, '2018-03-08', 'user', NULL, '2018-07-02', 'user', 1.6, 72);
 
 -- --------------------------------------------------------
 
@@ -2138,8 +2090,7 @@ INSERT INTO `visits` (`visitno`, `medicalno`, `diabeticcategory`, `hba1c`, `hdlc
 -- Stand-in structure for view `vpatient`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `vpatient`;
-CREATE TABLE IF NOT EXISTS `vpatient` (
+CREATE TABLE `vpatient` (
 `gid` varchar(50)
 ,`medicalno` int(11)
 ,`firstname` varchar(50)
@@ -2168,8 +2119,7 @@ CREATE TABLE IF NOT EXISTS `vpatient` (
 -- Stand-in structure for view `vpatientvisits`
 -- (See below for the actual view)
 --
-DROP VIEW IF EXISTS `vpatientvisits`;
-CREATE TABLE IF NOT EXISTS `vpatientvisits` (
+CREATE TABLE `vpatientvisits` (
 `visitno` bigint(11)
 ,`medicalno` int(11)
 ,`age` int(5)
@@ -2185,13 +2135,13 @@ CREATE TABLE IF NOT EXISTS `vpatientvisits` (
 ,`hdlc` int(11)
 ,`triglycerides` int(11)
 ,`ldlc` int(11)
-,`totalcholesterol` decimal(10,2)
+,`totalcholesterol` double
 ,`hba1c` char(10)
 ,`bpsystolic` int(11)
 ,`bloodpressure` varchar(23)
 ,`bpdiastolic` int(11)
 ,`SOUTHASIAN` varchar(1)
-,`bmi` decimal(10,5)
+,`bmi` double
 ,`waist` int(11)
 ,`FIRSTNAME` varchar(50)
 ,`SECONDNAME` varchar(50)
@@ -2210,9 +2160,8 @@ CREATE TABLE IF NOT EXISTS `vpatientvisits` (
 -- Table structure for table `waistscore`
 --
 
-DROP TABLE IF EXISTS `waistscore`;
-CREATE TABLE IF NOT EXISTS `waistscore` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `waistscore` (
+  `id` int(11) NOT NULL,
   `nationality` varchar(50) DEFAULT NULL,
   `gender` varchar(50) DEFAULT NULL,
   `waistfrom` int(11) DEFAULT NULL,
@@ -2225,9 +2174,8 @@ CREATE TABLE IF NOT EXISTS `waistscore` (
   `goalimprove` varchar(2000) NOT NULL,
   `goalworsen` varchar(2000) NOT NULL,
   `goalnochange` varchar(2000) NOT NULL,
-  `goalachieved` varchar(2000) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+  `goalachieved` varchar(2000) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `waistscore`
@@ -2262,8 +2210,276 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `vpatientvisits`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vpatientvisits`  AS  select `visits`.`visitno` AS `visitno`,`visits`.`medicalno` AS `medicalno`,(year(curdate()) - year(`patient`.`birthdate`)) AS `age`,`patient`.`gender` AS `GENDER`,`survey_v1`.`doyousmokecigarette` AS `doyousmokecigarette`,`survey_v1`.`doyousmokeshisha` AS `doyousmokeshisha`,`survey_v1`.`familyheartdesease` AS `familyheartdesease`,`survey_v1`.`familywithdiabetic` AS `familywithdiabetic`,`survey_v1`.`alreadyhavediabetic` AS `alreadyhavediabetic`,`survey_v1`.`diabeteswhenpregnant` AS `diabeteswhenpregnant`,`survey_v1`.`exercisedayperweek` AS `exercisedayperweek`,`survey_v1`.`physicallyactive` AS `physicallyactive`,`visits`.`hdlc` AS `hdlc`,`visits`.`triglycerides` AS `triglycerides`,`visits`.`ldlc` AS `ldlc`,`visits`.`totalcholesterol` AS `totalcholesterol`,`visits`.`hba1c` AS `hba1c`,`visits`.`bpsystolic` AS `bpsystolic`,concat(`visits`.`bpsystolic`,'/',`visits`.`bpdiastolic`) AS `bloodpressure`,`visits`.`bpdiastolic` AS `bpdiastolic`,`country`.`SOUTHASIAN` AS `SOUTHASIAN`,`visits`.`bmi` AS `bmi`,`visits`.`waist` AS `waist`,`patient`.`firstname` AS `FIRSTNAME`,`patient`.`secondname` AS `SECONDNAME`,`patient`.`grandfathername` AS `GRANDFATHERNAME`,`patient`.`lastname` AS `LASTNAME`,date_format(`visits`.`datecreated`,'%e-%b-%Y') AS `datecreated`,`visits`.`status` AS `status`,`country`.`COUNTRY` AS `Nationality`,`patient`.`gid` AS `patientgid`,`visits`.`datecompleted` AS `datecompleted` from (((`visits` join `patient` on((`visits`.`medicalno` = `patient`.`medicalno`))) join `country` on((`patient`.`nationality` = `country`.`ID`))) left join `survey_v1` on((`visits`.`visitno` = `survey_v1`.`visitno`))) ;
-COMMIT;
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bloodpressurescore`
+--
+ALTER TABLE `bloodpressurescore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `bmiscore`
+--
+ALTER TABLE `bmiscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `colorcodes`
+--
+ALTER TABLE `colorcodes`
+  ADD PRIMARY KEY (`colorname`);
+
+--
+-- Indexes for table `company`
+--
+ALTER TABLE `company`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `country`
+--
+ALTER TABLE `country`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `cvdcategory`
+--
+ALTER TABLE `cvdcategory`
+  ADD PRIMARY KEY (`category`);
+
+--
+-- Indexes for table `cvdcolor`
+--
+ALTER TABLE `cvdcolor`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cvdriskmessage`
+--
+ALTER TABLE `cvdriskmessage`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cvdscore`
+--
+ALTER TABLE `cvdscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cvdscore_delete`
+--
+ALTER TABLE `cvdscore_delete`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `goalsetting`
+--
+ALTER TABLE `goalsetting`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `hba1cscore`
+--
+ALTER TABLE `hba1cscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lifestylescore_age`
+--
+ALTER TABLE `lifestylescore_age`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lifestylescore_exercise`
+--
+ALTER TABLE `lifestylescore_exercise`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lifestylescore_history`
+--
+ALTER TABLE `lifestylescore_history`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lifestylescore_smoking`
+--
+ALTER TABLE `lifestylescore_smoking`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lipidscore`
+--
+ALTER TABLE `lipidscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `maritalstatus`
+--
+ALTER TABLE `maritalstatus`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `patient`
+--
+ALTER TABLE `patient`
+  ADD PRIMARY KEY (`medicalno`);
+
+--
+-- Indexes for table `prediabeticbmiscore`
+--
+ALTER TABLE `prediabeticbmiscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `prediabeticscore`
+--
+ALTER TABLE `prediabeticscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `prediabeticscore_age`
+--
+ALTER TABLE `prediabeticscore_age`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `survey_v1`
+--
+ALTER TABLE `survey_v1`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `unitused`
+--
+ALTER TABLE `unitused`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `visits`
+--
+ALTER TABLE `visits`
+  ADD PRIMARY KEY (`visitno`);
+
+--
+-- Indexes for table `waistscore`
+--
+ALTER TABLE `waistscore`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bloodpressurescore`
+--
+ALTER TABLE `bloodpressurescore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `bmiscore`
+--
+ALTER TABLE `bmiscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+--
+-- AUTO_INCREMENT for table `country`
+--
+ALTER TABLE `country`
+  MODIFY `ID` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=225;
+--
+-- AUTO_INCREMENT for table `cvdcolor`
+--
+ALTER TABLE `cvdcolor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `cvdriskmessage`
+--
+ALTER TABLE `cvdriskmessage`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+--
+-- AUTO_INCREMENT for table `cvdscore`
+--
+ALTER TABLE `cvdscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=641;
+--
+-- AUTO_INCREMENT for table `goalsetting`
+--
+ALTER TABLE `goalsetting`
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `hba1cscore`
+--
+ALTER TABLE `hba1cscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+--
+-- AUTO_INCREMENT for table `lifestylescore_age`
+--
+ALTER TABLE `lifestylescore_age`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `lifestylescore_exercise`
+--
+ALTER TABLE `lifestylescore_exercise`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+--
+-- AUTO_INCREMENT for table `lifestylescore_history`
+--
+ALTER TABLE `lifestylescore_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT for table `lifestylescore_smoking`
+--
+ALTER TABLE `lifestylescore_smoking`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+--
+-- AUTO_INCREMENT for table `lipidscore`
+--
+ALTER TABLE `lipidscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+--
+-- AUTO_INCREMENT for table `patient`
+--
+ALTER TABLE `patient`
+  MODIFY `medicalno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+--
+-- AUTO_INCREMENT for table `prediabeticbmiscore`
+--
+ALTER TABLE `prediabeticbmiscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT for table `prediabeticscore`
+--
+ALTER TABLE `prediabeticscore`
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `prediabeticscore_age`
+--
+ALTER TABLE `prediabeticscore_age`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+--
+-- AUTO_INCREMENT for table `survey_v1`
+--
+ALTER TABLE `survey_v1`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT for table `unitused`
+--
+ALTER TABLE `unitused`
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `visits`
+--
+ALTER TABLE `visits`
+  MODIFY `visitno` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT for table `waistscore`
+--
+ALTER TABLE `waistscore`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

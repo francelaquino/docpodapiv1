@@ -109,7 +109,7 @@ class AnalysisController extends Controller {
         $scorecard[]= Helpers::getLDLC($visit["ldlc"]);
         $scorecard[]= Helpers::getHDLC($visit["hdlc"],$survey_v1["doyousmoke"]);
         $scorecard[]= Helpers::getTriglycerides($visit["triglycerides"]);
-        $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"]);
+        $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"],$visit["height"]);
         $scorecard[]= Helpers::getWaist($visit["waist"],$patient["southasian"],$patient["gender"]);
         if($survey_v1["physicallyactive"]=="Y"){
             $scorecard[]= Helpers::getExercise($survey_v1["typeofexercise"],$survey_v1["exerciseperweek30min"]);
@@ -117,8 +117,12 @@ class AnalysisController extends Controller {
         if($survey_v1["doyousmoke"]=="Smoker"){
             $scorecard[]= Helpers::getSmoker($survey_v1["doyousmokecigarette"],'Cigarettes',$patient["gender"]);
             $scorecard[]= Helpers::getSmoker($survey_v1["doyousmokeshisha"],'Shisha',$patient["gender"]);
+        }else{
+            $scorecard[]= Helpers::getSmoker('Non-Smoker','Cigarettes','Male');
+            $scorecard[]= Helpers::getSmoker('Non-Smoker','Shisha','Male');
         }
-        return json_encode($scorecard);
+        return $scorecard;
+        //return json_encode($scorecard);
     }
 
     public function goalsetting_v1($medicalno,$visitno1,$visitno2)
@@ -142,16 +146,20 @@ class AnalysisController extends Controller {
             'smoker_cigarette_status'=>'',
             'smoker_shisha_message'=>'',
             'smoker_shisha_status'=>'',
+            'bmi_message'=>'',
+            'bmi_status'=>'',
         );
 
        
-
+        $patient=Helpers::getPatientData($medicalno);
         $visit1=Helpers::getPatientVisitData($medicalno,$visitno1);
         $visit2=Helpers::getPatientVisitData($medicalno,$visitno2);
         $survey_v1_1=Helpers::getSurveyData_v1($medicalno,$visitno1);
         $survey_v1_2=Helpers::getSurveyData_v1($medicalno,$visitno2);
-
+        
         $hba1c= Helpers::getHbA1C($visit2["hba1c"]);
+        $bmi1= Helpers::getBMI($visit1["bmi"],$patient["southasian"],$visit1["weight"],$visit1["height"] );
+        $bmi2= Helpers::getBMI($visit2["bmi"],$patient["southasian"],$visit2["weight"],$visit2["height"] );
         $hdlc= Helpers::getHDLC($visit2["hdlc"],"N");
         $triglycerides= Helpers::getTriglycerides($visit2["triglycerides"]);
         $ldlc= Helpers::getLDLC($visit2["ldlc"]);
@@ -182,81 +190,81 @@ class AnalysisController extends Controller {
         
        //HbA1c
         if((int)$hba1c["result"]==(int)$hba1c["target_result"]){
-            $goalsetting["hba1c_message"]="Congratulations, your HbA1c result is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalachieved"];
+            $goalsetting["hba1c_message"]="Congratulations, your HbA1c result is ".$hba1c["result"].$hba1c["unit"].". ".$hba1c["goalachieved"];
             $goalsetting["hba1c_status"]="achieved";
         }
         else if((int)$visit1["hba1c"]==(int)$visit2["hba1c"]){
             $goalsetting["hba1c_message"]=$hba1c["goalnochange"];
             $goalsetting["hba1c_status"]="nochange";
         }else if((int)$visit1["hba1c"]>(int)$visit2["hba1c"]){
-            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalimprove"];
+            $goalsetting["hba1c_message"]="Your HbA1c is ".$hba1c["result"].$hba1c["unit"].". ".$hba1c["goalimprove"];
             $goalsetting["hba1c_status"]="improve";
         }else if((int)$visit1["hba1c"]<(int)$visit2["hba1c"]){
-            $goalsetting["hba1c_message"]="Your HbA1c is [".$hba1c["result"].$hba1c["unit"]."]. ".$hba1c["goalworsen"];
+            $goalsetting["hba1c_message"]="Your HbA1c is ".$hba1c["result"].$hba1c["unit"].". ".$hba1c["goalworsen"];
             $goalsetting["hba1c_status"]="worsen";
         }
 
         //hdlc
         if((int)$hdlc["result"]==(int)$hdlc["target_result"]){
-            $goalsetting["hdlc_message"]="Congratulations, your HDLC result is [".$hdlc["result"].$hdlc["unit"]."]. ".$hdlc["goalachieved"];
+            $goalsetting["hdlc_message"]="Congratulations, your HDLC result is ".$hdlc["result"].$hdlc["unit"].". ".$hdlc["goalachieved"];
             $goalsetting["hdlc_status"]="achieved";
         }
         else if((int)$visit1["hdlc"]==(int)$visit2["hdlc"]){
-            $goalsetting["hdlc_message"]="Your HDLC result is [".$hdlc["result"].$hdlc["unit"]."]. ".$hdlc["goalnochange"];
+            $goalsetting["hdlc_message"]="Your HDLC result is ".$hdlc["result"].$hdlc["unit"].". ".$hdlc["goalnochange"];
             $goalsetting["hdlc_status"]="nochange";
         }else if((int)$visit1["hdlc"]<(int)$visit2["hdlc"]){
-            $goalsetting["hdlc_message"]="Your HDLC result has increased from [".$visit1["hdlc"].$hdlc["unit"]."] to [".$visit2["hdlc"].$hdlc["unit"]."]. ".$hdlc["goalimprove"];
+            $goalsetting["hdlc_message"]="Your HDLC result has increased from ".$visit1["hdlc"].$hdlc["unit"]."] to ".$visit2["hdlc"].$hdlc["unit"].". ".$hdlc["goalimprove"];
             $goalsetting["hdlc_status"]="improve";
         }else if((int)$visit1["hdlc"]>(int)$visit2["hdlc"]){
-            $goalsetting["hdlc_message"]="Your HDLC result has decreased from [".$visit1["hdlc"].$hdlc["unit"]."] to [".$visit2["hdlc"].$hdlc["unit"]."]. ".$hdlc["goalworsen"];
+            $goalsetting["hdlc_message"]="Your HDLC result has decreased from ".$visit1["hdlc"].$hdlc["unit"]."] to ".$visit2["hdlc"].$hdlc["unit"].". ".$hdlc["goalworsen"];
             $goalsetting["hdlc_status"]="worsen";
         }
         
         //Triglycerides
         if((int)$triglycerides["result"]<=(int)$triglycerides["target_result"]){
-            $goalsetting["triglycerides_message"]="Congratulations, your Triglycerides result is [".$triglycerides["result"].$triglycerides["unit"]."]. ".$triglycerides["goalachieved"];
+            $goalsetting["triglycerides_message"]="Congratulations, your Triglycerides result is ".$triglycerides["result"].$triglycerides["unit"].". ".$triglycerides["goalachieved"];
             $goalsetting["triglycerides_status"]="achieved";
         }
         else if((int)$visit1["triglycerides"]==(int)$visit2["triglycerides"]){
-            $goalsetting["triglycerides_message"]="Your Triglycerides result is [".$triglycerides["result"].$triglycerides["unit"]."]. ".$triglycerides["goalnochange"];
+            $goalsetting["triglycerides_message"]="Your Triglycerides result is ".$triglycerides["result"].$triglycerides["unit"].". ".$triglycerides["goalnochange"];
             $goalsetting["triglycerides_status"]="nochange";
         }else if((int)$visit1["triglycerides"]>(int)$visit2["triglycerides"]){
-            $goalsetting["triglycerides_message"]="Your Triglycerides result has decreased from [".$visit1["triglycerides"].$triglycerides["unit"]."] to [".$visit2["triglycerides"].$triglycerides["unit"]."]. ".$triglycerides["goalimprove"];
+            $goalsetting["triglycerides_message"]="Your Triglycerides result has decreased from ".$visit1["triglycerides"].$triglycerides["unit"]."] to ".$visit2["triglycerides"].$triglycerides["unit"].". ".$triglycerides["goalimprove"];
             $goalsetting["triglycerides_status"]="improve";
         }else if((int)$visit1["triglycerides"]<(int)$visit2["triglycerides"]){
-            $goalsetting["triglycerides_message"]="Your Triglycerides result has increased from [".$visit1["triglycerides"].$triglycerides["unit"]."] to [".$visit2["triglycerides"].$triglycerides["unit"]."]. ".$triglycerides["goalworsen"];
+            $goalsetting["triglycerides_message"]="Your Triglycerides result has increased from ".$visit1["triglycerides"].$triglycerides["unit"]."] to ".$visit2["triglycerides"].$triglycerides["unit"].". ".$triglycerides["goalworsen"];
             $goalsetting["triglycerides_status"]="worsen";
         }
 
         //LDLC
         if((int)$ldlc["result"]<=(int)$ldlc["target_result"]){
-            $goalsetting["ldlc_message"]="Congratulations, your LDLC result is [".$ldlc["result"].$ldlc["unit"]."]. ".$ldlc["goalachieved"];
+            $goalsetting["ldlc_message"]="Congratulations, your LDLC result is ".$ldlc["result"].$ldlc["unit"].". ".$ldlc["goalachieved"];
             $goalsetting["ldlc_status"]="achieved";
         }
         else if((int)$visit1["ldlc"]==(int)$visit2["ldlc"]){
-            $goalsetting["ldlc_message"]="Your LDLC result is [".$ldlc["result"].$ldlc["unit"]."]. ".$ldlc["goalnochange"];
+            $goalsetting["ldlc_message"]="Your LDLC result is ".$ldlc["result"].$ldlc["unit"].". ".$ldlc["goalnochange"];
             $goalsetting["ldlc_status"]="nochange";
         }else if((int)$visit1["ldlc"]>(int)$visit2["ldlc"]){
-            $goalsetting["ldlc_message"]="Your LDLC result has decreased from [".$visit1["ldlc"].$ldlc["unit"]."] to [".$visit2["ldlc"].$ldlc["unit"]."]. ".$ldlc["goalimprove"];
+            $goalsetting["ldlc_message"]="Your LDLC result has decreased from ".$visit1["ldlc"].$ldlc["unit"]."] to ".$visit2["ldlc"].$ldlc["unit"].". ".$ldlc["goalimprove"];
             $goalsetting["ldlc_status"]="improve";
         }else if((int)$visit1["ldlc"]<(int)$visit2["ldlc"]){
-            $goalsetting["ldlc_message"]="Your LDLC result has increased from [".$visit1["ldlc"].$ldlc["unit"]."] to [".$visit2["ldlc"].$ldlc["unit"]."]. ".$ldlc["goalworsen"];
+            $goalsetting["ldlc_message"]="Your LDLC result has increased from ".$visit1["ldlc"].$ldlc["unit"]."] to ".$visit2["ldlc"].$ldlc["unit"].". ".$ldlc["goalworsen"];
             $goalsetting["ldlc_status"]="worsen";
         }
 
         //Total Cholesterol
         if((int)$totalcholesterol["result"]<=(int)$totalcholesterol["target_result"]){
-            $goalsetting["totalcholesterol_message"]="Congratulations, your Total Cholesterol result is [".$totalcholesterol["result"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalachieved"];
+            $goalsetting["totalcholesterol_message"]="Congratulations, your Total Cholesterol result is ".$totalcholesterol["result"].$totalcholesterol["unit"].". ".$totalcholesterol["goalachieved"];
             $goalsetting["totalcholesterol_status"]="achieved";
         }
         else if((int)$visit1["cholesterol"]==(int)$visit2["cholesterol"]){
-            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result is [".$totalcholesterol["result"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalnochange"];
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result is ".$totalcholesterol["result"].$totalcholesterol["unit"].". ".$totalcholesterol["goalnochange"];
             $goalsetting["totalcholesterol_status"]="nochange";
         }else if((int)$visit1["cholesterol"]>(int)$visit2["cholesterol"]){
-            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has decreased from [".$visit1["cholesterol"].$totalcholesterol["unit"]."] to [".$visit2["cholesterol"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalimprove"];
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has decreased from ".$visit1["cholesterol"].$totalcholesterol["unit"]."] to ".$visit2["cholesterol"].$totalcholesterol["unit"].". ".$totalcholesterol["goalimprove"];
             $goalsetting["totalcholesterol_status"]="improve";
         }else if((int)$visit1["cholesterol"]<(int)$visit2["cholesterol"]){
-            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has increased from [".$visit1["cholesterol"].$totalcholesterol["unit"]."] to [".$visit2["cholesterol"].$totalcholesterol["unit"]."]. ".$totalcholesterol["goalworsen"];
+            $goalsetting["totalcholesterol_message"]="Your Total Cholesterol result has increased from ".$visit1["cholesterol"].$totalcholesterol["unit"]."] to ".$visit2["cholesterol"].$totalcholesterol["unit"].". ".$totalcholesterol["goalworsen"];
             $goalsetting["totalcholesterol_status"]="worsen";
         }
         
@@ -338,6 +346,26 @@ class AnalysisController extends Controller {
             $goalsetting["smoker_shisha_status"]="improve";
         }
 
+        //BMI
+        if($visit2["weight"]>=$bmi2["healthyweightfrom"] && $visit2["weight"]<=$bmi2["healthyweightto"]){
+            $goalsetting["bmi_message"]="Congratulations, your BMI result is ".$bmi2["result"].$bmi2["unit"].". ".$bmi2["goalachieved"];
+            $goalsetting["bmi_status"]="achieved";
+        }
+        else if($visit2["weight"]<$bmi2["healthyweightfrom"]){
+            $goalsetting["bmi_message"]="Your weight is ".$visit2["weight"]."kg. It means you are underweight." .$bmi2["message"];
+            $goalsetting["bmi_status"]="worsen";
+        }
+        else if((int)$visit2["weight"]==(int)$visit1["weight"]){
+            $goalsetting["bmi_message"]="Your weight is ".$visit2["weight"]."kg. This is the same as last time." .$bmi2["message"]." ".$bmi2["goalnochange"];
+            $goalsetting["bmi_status"]="nochange";
+        }else if((int)$visit2["weight"]>(int)$visit1["weight"]){
+            $goalsetting["bmi_message"]="Your weight is ".$visit2["weight"]."kg and has increased by ".(string)($visit2["weight"]-$visit1["weight"])."kg since last time.".$bmi2["goalworsen"];
+            $goalsetting["bmi_status"]="worsen1";
+        }else if((int)$visit2["weight"]<(int)$visit1["weight"]){
+            $goalsetting["bmi_message"]="Congratulations you have lost weight! Your weight is ".$visit2["weight"]."kg. It means you have lost ".(string)($visit1["weight"]-$visit2["weight"])."kg. ".$bmi2["goalimprove"];
+            $goalsetting["bmi_status"]="improve";
+        }
+
         
 
         
@@ -353,7 +381,7 @@ class AnalysisController extends Controller {
         $visit=Helpers::getPatientVisitData($medicalno,$visitno);
         $scorecard[]= Helpers::getBloodPressure($visit["bpsystolic"],$visit["bpdiastolic"]);
         $scorecard[]= Helpers::getHbA1C($visit["hba1c"]);
-        $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"]);
+        $scorecard[]= Helpers::getBMI($visit["bmi"],$patient["southasian"],$visit["weight"],$visit["height"]);
         $scorecard[]= Helpers::getWaist($visit["waist"],$patient["southasian"],$patient["gender"]);
         $scorecard[]= Helpers::getCholesterol($visit["cholesterol"],$survey_v1["doyousmoke"]);
         $scorecard[]= Helpers::getHDLC($visit["hdlc"],$survey_v1["doyousmoke"]);

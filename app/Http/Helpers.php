@@ -297,21 +297,35 @@ class Helpers{
         return $data;
     }
 
-    public static function getBMI($value,$nationality,$weight){
+    public static function getBMI($value,$nationality,$weight,$height){
 
         $data=array(
             'seq'=>'',
             'test'=>'BMI',
             'unit'=>'kg/m²',
             'target'=>'18.5-24.9kg/m²',
+            'target_result'=>'',
             'target_points'=>'0',
+            'healthyweightfrom'=>'0',
+            'healthyweightto'=>'0',
             'result'=>'',
             'result1'=>'',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
-            'message'=>''
+            'message'=>'',
+            'goalimprove'=>'',
+            'goalworsen'=>'',
+            'goalnochange'=>'',
+            'goalachieved'=>'',
         );
+
+        $results= DB::select("select points from bmiscore where mark='Healthy Weight' and nationality=:nationality",['nationality'=>$nationality]);
+        if($results>0){
+            $data["target_points"]=$results[0]->points;
+        }
+
+
         $value=round($value,2);
 
 
@@ -331,31 +345,39 @@ class Helpers{
         $healthyweightto=round(($bmito/$value)*$weight,2);
         $needtolose=$weight-$healthyweightto;
         $extramessage="";
+        $healthybmi=$healthyweightto/($height*$height);
+        $data["target_result"]=$healthybmi;
+
         if($weight>$healthyweightto){
             $extramessage='To reach a healthy BMI you need to lose about '.$needtolose.'kg.';
+        }else{
+            $needtolose=0;
         }
 
 
 
 
         
-        $results= DB::select("select message,mark,points,color from bmiscore
+        $results= DB::select("select goalimprove,goalworsen,message,goalnochange,goalachieved,mark,points,color from bmiscore
         where nationality=:nationality  and :value>=bmifrom AND :value<=bmito",
         ['nationality'=>$nationality,'value'=>$value]);
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'BMI',
-                'unit'=>'kg/m²',
-                'target'=>'18.5-24.9kg/m²',
-                'target_points'=>'0',
-                'result'=>$value,
-                'result1'=>'Your BMI is '.$value.'kg/m².',
-                'risk_category'=>$results[0]->mark,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-                'message'=>'A healthy weight for someone with your height is between '.$healthyweightfrom.'kg and '.$healthyweightto.'kg. '.$extramessage.$results[0]->message
-            );
+            $data["result"]=$value;
+            $data["result1"]='Your BMI is '.$value.'kg/m².';
+            $data["risk_category"]=$results[0]->mark;
+            if($results[0]->points>0){
+                $data["result_points"]= (int)$data["target_points"]+floor($needtolose);
+            }else{
+                $data["result_points"]= $results[0]->points;
+            }
+            $data["color"]=$results[0]->color;
+            $data["message"]='A healthy weight for someone with your height is between '.$healthyweightfrom.'kg and '.$healthyweightto.'kg. '.$extramessage.$results[0]->message;
+            $data["goalimprove"]=$results[0]->goalimprove;
+            $data["goalworsen"]=$results[0]->goalworsen;
+            $data["goalnochange"]=$results[0]->goalnochange;
+            $data["goalachieved"]=$results[0]->goalachieved;
+            $data["healthyweightfrom"]=$healthyweightfrom;
+            $data["healthyweightto"]=$healthyweightto;
         }
 
         return $data;
@@ -522,7 +544,7 @@ class Helpers{
             $data["cholesterol"]=$results[0]->totalcholesterol;
             $data["hdlc"]=$results[0]->hdlc;
             $data["waist"]=$results[0]->waist;
-            $data["weight"]=$results[0]->weight;
+            $data["weight"]=round($results[0]->weight,2);
             $data["height"]=$results[0]->height;
             $data["bmi"]=round($results[0]->weight/($results[0]->height*$results[0]->height),2);
             $data["ldlc"]=$results[0]->ldlc;
