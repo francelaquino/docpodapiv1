@@ -518,11 +518,14 @@ class Helpers{
     public static function getPatientVisitData($medicalno,$visitno){
         $data=array(
             'visitno'=>'',
+            'visitdate'=>'',
             'bloodpressure'=>'',
             'bpsystolic'=>'',
             'bpdiastolic'=>'',
             'hba1c'=>'',
+            'hba1c_unit'=>'%',
             'cholesterol'=>'',
+            'cholesterol_unit'=>'mg/dL',
             'ldlc'=>'',
             'triglycerides'=>'',
             'hdlc'=>'',
@@ -533,13 +536,14 @@ class Helpers{
             'typeofexercise'=>'',
             'exercisedays'=>''
         );
-        $results= DB::select("select weight,height,visitno,bpsystolic,bpdiastolic,hba1c,totalcholesterol,hdlc,waist,bmi,ldlc,triglycerides from visits  where medicalno=:medicalno and visitno=:visitno",
+        $results= DB::select("select Date_Format(datecreated, '%e-%b-%Y') as visitdate,weight,height,visitno,bpsystolic,bpdiastolic,hba1c,totalcholesterol,hdlc,waist,bmi,ldlc,triglycerides from visits  where medicalno=:medicalno and visitno=:visitno",
         ['medicalno'=>$medicalno,'visitno'=>$visitno]);
         if($results){
             $data["visitno"]=$results[0]->visitno;
+            $data["visitdate"]=$results[0]->visitdate;
             $data["bpsystolic"]=$results[0]->bpsystolic;
             $data["bpdiastolic"]=$results[0]->bpdiastolic;
-            $data["bloodpressure"]=$results[0]->bpsystolic.' - '.$results[0]->bpdiastolic;
+            $data["bloodpressure"]=$results[0]->bpsystolic.'/'.$results[0]->bpdiastolic;
             $data["hba1c"]=$results[0]->hba1c;
             $data["cholesterol"]=$results[0]->totalcholesterol;
             $data["hdlc"]=$results[0]->hdlc;
@@ -691,12 +695,11 @@ class Helpers{
 
         $category=Helpers::getCVDCategory($age,$gender,$smoker,$hba1c);
         $data["cvdcategory"]=$category;
-
         $countrycategory=Helpers::getCountryCategory_CVD($nationality);
 
 
         $results= DB::select("select riskgcc,messagegcc, riskeur_a,riskwpr_a,riskseasia from cvdscore where category=:category  and totalcholesterol=:totalcholesterol and :bloodpressure>=bpfrom and :bloodpressure<=bpto",
-        ['nationality'=>$nationality,'category'=>$category,'totalcholesterol'=>$cholesterol,'bloodpressure'=>$systolic]);
+        ['category'=>$category,'totalcholesterol'=>$cholesterol,'bloodpressure'=>$systolic]);
         if($results){
           
             if($countrycategory=='GCC'){
@@ -704,11 +707,18 @@ class Helpers{
                 $data["message"]=$results[0]->messagegcc;
             }else if($countrycategory=='WPR_A'){
                 $data["riskcategory"]=$results[0]->riskwpr_a;
+                $data["message"]=$results[0]->messagegcc;
             }else if($countrycategory=='EUR_A'){
                 $data["riskcategory"]=$results[0]->riskeur_a;
+                $data["message"]=$results[0]->messagegcc;
             }else if($countrycategory=='SE_ASIA'){
                 $data["riskcategory"]=$results[0]->riskseasia;
-            } 
+                $data["message"]=$results[0]->messagegcc;
+            }else{
+                $data["riskcategory"]=$results[0]->riskseasia;
+                $data["message"]=$results[0]->messagegcc;
+            }
+//David only message gcc was provided
             
             $results= DB::select("select colorname as color from cvdcolor where risk=:risk",
             ['risk'=>$data["riskcategory"]]);

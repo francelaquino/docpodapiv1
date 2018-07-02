@@ -32,7 +32,28 @@ class VisitController extends Controller {
     {
         $report=[];
         $patient= Helpers::getPatientData($medicalno);
-        $visit= DB::select("select * from visits where medicalno=:medicalno and visitno=:visitno ",["medicalno"=>$medicalno,"visitno"=>$visitno]);
+        $visit= DB::select("select medicalno,visitno,diabeticcategory,hba1c,hdlc,
+        triglycerides,
+        ldlc,
+        totalcholesterol,
+        bpsystolic,
+        bpdiastolic,
+        bmi,
+        waist,
+        lipidprofile_status,
+        hba1c_status,
+        bloodpressure_status,
+        bmi_status,
+        surveyno,
+        status,
+        datecreated,
+        createdby,
+        Date_Format(datecreated, '%e-%b-%Y') as visitdate,
+        datecompleted,
+        datemodified,
+        modifiedby,
+        height,
+        weight from visits where medicalno=:medicalno and visitno=:visitno ",["medicalno"=>$medicalno,"visitno"=>$visitno]);
         if(count($visit)>0){
             $report=array_merge($patient, (array)$visit[0]);    
         }
@@ -67,6 +88,7 @@ class VisitController extends Controller {
                $response= "Patient information successfully updated";        
         
                return json_encode($response);
+              
     }   
 
     public function savesurvey_v1()

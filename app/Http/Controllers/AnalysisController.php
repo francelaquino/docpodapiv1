@@ -121,8 +121,8 @@ class AnalysisController extends Controller {
             $scorecard[]= Helpers::getSmoker('Non-Smoker','Cigarettes','Male');
             $scorecard[]= Helpers::getSmoker('Non-Smoker','Shisha','Male');
         }
-        return $scorecard;
-        //return json_encode($scorecard);
+        //return $scorecard;
+        return json_encode($scorecard);
     }
 
     public function goalsetting_v1($medicalno,$visitno1,$visitno2)
@@ -408,7 +408,7 @@ class AnalysisController extends Controller {
         );
         
 
-        $cvd=Helpers::getCVDScore($patient["age"],$patient["gender"],$survey_v1["doyousmokecigarette"],$visit["hba1c"],$visit["cholesterol"],$visit["bpsystolic"],$patient["nationalityid"]);
+        $cvd=Helpers::getCVDScore($patient["age"],$patient["gender"],$survey_v1["doyousmoke"],$visit["hba1c"],$visit["cholesterol"],$visit["bpsystolic"],$patient["nationalityid"]);
 
         $results= DB::select("select message from cvdriskmessage where risk=:risk and gender=:gender and smoker=(case when :smoker then 'Y' else 'N' end) and diabetic=(case when :hba1c>=6.5 then 'Y' else 'N' end)",
             ['risk'=>$cvd["riskcategory"],'gender'=>$patient["gender"],'smoker'=>$survey_v1["doyousmoke"],'hba1c'=>$visit["hba1c"]]);
@@ -420,7 +420,7 @@ class AnalysisController extends Controller {
         
         
 
-return $report;
+        return $report;
 
 
         
