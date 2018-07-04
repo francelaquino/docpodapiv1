@@ -96,7 +96,8 @@ class AnalysisController extends Controller {
             $prediabetic["message"]=$results[0]->message;
         }
 
-        return json_encode($prediabetic);
+        return $prediabetic;
+        //return json_encode($prediabetic);
     }
     public function healthscore_v1($medicalno,$visitno)
     {
@@ -121,8 +122,8 @@ class AnalysisController extends Controller {
             $scorecard[]= Helpers::getSmoker('Non-Smoker','Cigarettes','Male');
             $scorecard[]= Helpers::getSmoker('Non-Smoker','Shisha','Male');
         }
-        //return $scorecard;
-        return json_encode($scorecard);
+        return $scorecard;
+        //return json_encode($scorecard);
     }
 
     public function goalsetting_v1($medicalno,$visitno1,$visitno2)
@@ -370,7 +371,8 @@ class AnalysisController extends Controller {
 
         
         
-        return json_encode($goalsetting);
+        //return json_encode($goalsetting);
+        return $goalsetting;
     }
 
 
@@ -394,7 +396,8 @@ class AnalysisController extends Controller {
         
         
         
-        return json_encode($scorecard);
+        return $scorecard;
+        //return json_encode($scorecard);
     }
     
     public function cvdreport_v1($medicalno,$visitno)

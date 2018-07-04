@@ -433,6 +433,7 @@ class Helpers{
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
+            'colorcode'=>'',
             'goalimprove'=>'',
             'goalworsen'=>'',
             'goalnochange'=>'',
@@ -440,7 +441,7 @@ class Helpers{
             'color'=>'',
         );
 
-        $results= DB::select("select color,perday,goalimprove,goalworsen,goalnochange,goalachieved,points from lifestylescore_smoking
+        $results= DB::select("select color,colorcode,perday,goalimprove,goalworsen,goalnochange,goalachieved,points from lifestylescore_smoking
         where smoking=:type and gender=:gender and perday=:value",
         ['type'=>$type,'gender'=>$gender,'value'=>$value]);
         
@@ -453,6 +454,7 @@ class Helpers{
                 $data["goalnochange"]=$results[0]->goalnochange;
                 $data["goalachieved"]=$results[0]->goalachieved;
                 $data["color"]=$results[0]->color;
+                $data["colorcode"]=$results[0]->colorcode;
         }
 
         return $data;
@@ -469,13 +471,14 @@ class Helpers{
                 'risk_category'=>'',
                 'result_points'=>'',
                 'color'=>'',
+                'colorcode'=>'',
                 'goalimprove'=>'',
                 'goalworsen'=>'',
                 'goalnochange'=>'',
                 'goalachieved'=>'',
             );
 
-        $results= DB::select("select distinct goalimprove,goalworsen,goalnochange,goalachieved,riskcategory,points,color from lifestylescore_exercise 
+        $results= DB::select("select distinct goalimprove,goalworsen,goalnochange,goalachieved,riskcategory,points,color,colorcode from lifestylescore_exercise 
         where exercise=:exercise and days=:days",
         ['exercise'=>$exercise,'days'=>$days]);
         
@@ -489,6 +492,7 @@ class Helpers{
                     'risk_category'=>$results[0]->riskcategory,
                     'result_points'=>$results[0]->points,
                     'color'=>$results[0]->color,
+                    'colorcode'=>$results[0]->colorcode,
                     'goalimprove'=>$results[0]->goalimprove,
                     'goalworsen'=>$results[0]->goalworsen,
                     'goalnochange'=>$results[0]->goalnochange,
