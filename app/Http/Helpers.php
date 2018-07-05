@@ -72,6 +72,7 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
         );
 
         $results= DB::select("select points from hba1cscore where diabeticrisk='Healthy'");
@@ -79,7 +80,7 @@ class Helpers{
             $data["target_points"]=$results[0]->points;
         }
 
-        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
+        $results= DB::select("select traffic,colorcode,goalimprove,goalworsen,goalnochange,goalachieved,messagenondiabetic,messagediabetic,diabeticrisk,points,color from hba1cscore
         where :value>=perfrom AND :value<=perto",
         ['value'=>$value]);
         if($results>0){
@@ -91,6 +92,7 @@ class Helpers{
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
             $data["colorcode"]=$results[0]->colorcode;
+            $data["traffic"]=$results[0]->traffic;
             if($value>=6.5){
                 $data["message"]=$results[0]->messagediabetic;
             }else{
@@ -121,13 +123,14 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
         );
         $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='TotalCholesterol'");
         if($results>0){
             $data["target_points"]=$results[0]->points;
         }
 
-        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
+        $results= DB::select("select traffic,colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
             where test='TotalCholesterol' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
@@ -139,6 +142,7 @@ class Helpers{
             $data["goalworsen"]=$results[0]->goalworsen;
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
+            $data["traffic"]=$results[0]->traffic;
 
             if($smoker=="Y"){
                 $data["message"]=$results[0]->messageforsmoker;
@@ -170,6 +174,7 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
         );
 
         $results= DB::select("select points from lipidscore where riskcategory='Healthy' and test='LDLC'");
@@ -178,7 +183,7 @@ class Helpers{
         }
 
 
-        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
+        $results= DB::select("select traffic,colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
             where test='LDLC' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
@@ -191,6 +196,7 @@ class Helpers{
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
             $data["colorcode"]=$results[0]->colorcode;
+            $data["traffic"]=$results[0]->traffic;
         }
 
         return $data;
@@ -216,6 +222,7 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
         );
 
 
@@ -225,7 +232,7 @@ class Helpers{
         }
 
 
-        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
+        $results= DB::select("select traffic,colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,messageforsmoker,riskcategory,points,color from lipidscore 
             where test='HDLC' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
@@ -238,6 +245,7 @@ class Helpers{
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
             $data["colorcode"]=$results[0]->colorcode;
+            $data["traffic"]=$results[0]->traffic;
             if($smoker=="Y"){
                 $data["message"]=$results[0]->messageforsmoker;
             }else{
@@ -269,6 +277,7 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
         );
 
 
@@ -278,7 +287,7 @@ class Helpers{
             $data["target_points"]=$results[0]->points;
         }
 
-        $results= DB::select("select colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
+        $results= DB::select("select traffic,colorcode,goalimprove,goalworsen,goalnochange,goalachieved,message,riskcategory,points,color from lipidscore 
             where test='Triglycerides' and :value>=MGFROM AND :value<=MGTO",
         ['value'=>$value]);
         if($results>0){
@@ -291,6 +300,7 @@ class Helpers{
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
             $data["colorcode"]=$results[0]->colorcode;
+            $data["traffic"]=$results[0]->traffic;
           
         }
 
@@ -390,32 +400,32 @@ class Helpers{
             'test'=>'Waist Size',
             'target'=>'Less than 94cm',
             'target_points'=>'0',
+            'target_result'=>'0',
             'result'=>'',
+            'unit'=>'cm',
             'result1'=>'',
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
-            'message'>=''
+            'message'=>''
         );
 
         $results= DB::select("select message,mark,points,color from waistscore
         where nationality=:nationality and gender=:gender and :value>=waistfrom AND :value<=waistto",
         ['nationality'=>$nationality,'gender'=>$gender,'value'=>$value]);
-        
+        if($nationality=='SA'){
+            $data["target_result"]=93;
+        }else{
+            $data["target_result"]=89;
+        }
 
         if($results>0){
-            $data=array(
-                'seq'=>'',
-                'test'=>'Waist Size',
-                'target'=>'Less than 94cm',
-                'target_points'=>'0',
-                'result'=>$value.'cm',
-                'result1'=>'Your waist measurement is '.$value.' cm.',
-                'risk_category'=>$results[0]->mark,
-                'result_points'=>$results[0]->points,
-                'color'=>$results[0]->color,
-                'message'=>$results[0]->message
-            );
+            $data["result"]=$value;
+            $data["result1"]='Your waist measurement is '.$value.'cm.';
+            $data["risk_category"]=$results[0]->mark;
+            $data["result_points"]=$results[0]->points;
+            $data["color"]=$results[0]->color;
+            $data["message"]=$results[0]->message;
 
         }
 
