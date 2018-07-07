@@ -21,18 +21,23 @@ class Helpers{
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
+            'colorcode'=>'',
             'message'=>'',
             'goalincrease'=>'',
             'goaldecrease'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'bpsystolic_traffic'=>'',
+            'bpdiastolic_traffic'=>'',
+            'bpsystolic_colorcode'=>'',
+            'bpdiastolic_colorcode'=>'',
         );
 
         
 
 
 
-        $results= DB::select("select goalincrease,goaldecrease,goalnochange,goalachieved,message,mark,points,color from bloodpressurescore where
+        $results= DB::select("select colorcode,goalincrease,goaldecrease,goalnochange,goalachieved,message,mark,points,color from bloodpressurescore where
         (:systolic>=systolicfrom and :systolic <=systolicto) or (:diastolic>=diastolicfrom and :diastolic<=diastolicto) order by points desc limit 1",
         ['systolic'=>$systolic,'diastolic'=>$diastolic]);
         
@@ -46,6 +51,25 @@ class Helpers{
             $data["goaldecrease"]=$results[0]->goaldecrease;
             $data["goalnochange"]=$results[0]->goalnochange;
             $data["goalachieved"]=$results[0]->goalachieved;
+            $data["colorcode"]=$results[0]->colorcode;
+        }
+
+        $results= DB::select("select colorcode,traffic from bloodpressurescore where
+        (:systolic>=systolicfrom and :systolic <=systolicto) order by points desc limit 1",
+        ['systolic'=>$systolic]);
+        
+        if($results>0){
+            $data["bpsystolic_traffic"]=$results[0]->traffic;
+            $data["bpsystolic_colorcode"]=$results[0]->colorcode;
+        }
+
+        $results= DB::select("select colorcode,traffic from bloodpressurescore where
+        (:diastolic>=diastolicfrom and :diastolic <=diastolicto) order by points desc limit 1",
+        ['diastolic'=>$diastolic]);
+        
+        if($results>0){
+            $data["bpdiastolic_traffic"]=$results[0]->traffic;
+            $data["bpdiastolic_colorcode"]=$results[0]->colorcode;
         }
 
         return $data;
@@ -328,6 +352,8 @@ class Helpers{
             'goalworsen'=>'',
             'goalnochange'=>'',
             'goalachieved'=>'',
+            'traffic'=>'',
+            'colorcode'=>'',
         );
 
         $results= DB::select("select points from bmiscore where mark='Healthy Weight' and nationality=:nationality",['nationality'=>$nationality]);
@@ -368,7 +394,7 @@ class Helpers{
 
 
         
-        $results= DB::select("select goalimprove,goalworsen,message,goalnochange,goalachieved,mark,points,color from bmiscore
+        $results= DB::select("select colorcode,traffic,goalimprove,goalworsen,message,goalnochange,goalachieved,mark,points,color from bmiscore
         where nationality=:nationality  and :value>=bmifrom AND :value<=bmito",
         ['nationality'=>$nationality,'value'=>$value]);
         if($results>0){
@@ -388,6 +414,8 @@ class Helpers{
             $data["goalachieved"]=$results[0]->goalachieved;
             $data["healthyweightfrom"]=$healthyweightfrom;
             $data["healthyweightto"]=$healthyweightto;
+            $data["traffic"]=$results[0]->traffic;
+            $data["colorcode"]=$results[0]->colorcode;
         }
 
         return $data;
@@ -407,10 +435,12 @@ class Helpers{
             'risk_category'=>'',
             'result_points'=>'',
             'color'=>'',
-            'message'=>''
+            'message'=>'',
+            'traffic'=>'',
+            'colorcode'=>''
         );
 
-        $results= DB::select("select message,mark,points,color from waistscore
+        $results= DB::select("select colorcode,traffic,message,mark,points,color from waistscore
         where nationality=:nationality and gender=:gender and :value>=waistfrom AND :value<=waistto",
         ['nationality'=>$nationality,'gender'=>$gender,'value'=>$value]);
         if($nationality=='SA'){
@@ -426,6 +456,8 @@ class Helpers{
             $data["result_points"]=$results[0]->points;
             $data["color"]=$results[0]->color;
             $data["message"]=$results[0]->message;
+            $data["traffic"]=$results[0]->traffic;
+            $data["colorcode"]=$results[0]->colorcode;
 
         }
 
@@ -449,9 +481,11 @@ class Helpers{
             'goalnochange'=>'',
             'goalachieved'=>'',
             'color'=>'',
+            'traffic'=>'',
+            'riskcategory'=>'',
         );
 
-        $results= DB::select("select color,colorcode,perday,goalimprove,goalworsen,goalnochange,goalachieved,points from lifestylescore_smoking
+        $results= DB::select("select riskcategory,traffic,color,colorcode,perday,goalimprove,goalworsen,goalnochange,goalachieved,points from lifestylescore_smoking
         where smoking=:type and gender=:gender and perday=:value",
         ['type'=>$type,'gender'=>$gender,'value'=>$value]);
         
@@ -465,6 +499,8 @@ class Helpers{
                 $data["goalachieved"]=$results[0]->goalachieved;
                 $data["color"]=$results[0]->color;
                 $data["colorcode"]=$results[0]->colorcode;
+                $data["traffic"]=$results[0]->traffic;
+                $data["riskcategory"]=$results[0]->riskcategory;
         }
 
         return $data;
@@ -486,9 +522,10 @@ class Helpers{
                 'goalworsen'=>'',
                 'goalnochange'=>'',
                 'goalachieved'=>'',
+                'traffic'=>'',
             );
 
-        $results= DB::select("select distinct goalimprove,goalworsen,goalnochange,goalachieved,riskcategory,points,color,colorcode from lifestylescore_exercise 
+        $results= DB::select("select distinct traffic,goalimprove,goalworsen,goalnochange,goalachieved,riskcategory,points,color,colorcode from lifestylescore_exercise 
         where exercise=:exercise and days=:days",
         ['exercise'=>$exercise,'days'=>$days]);
         
@@ -507,6 +544,7 @@ class Helpers{
                     'goalworsen'=>$results[0]->goalworsen,
                     'goalnochange'=>$results[0]->goalnochange,
                     'goalachieved'=>$results[0]->goalachieved,
+                    'traffic'=>$results[0]->traffic,
                 );
            
 
